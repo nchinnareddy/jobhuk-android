@@ -7,16 +7,16 @@
     <uses-sdk
         android:minSdkVersion="8"
         android:targetSdkVersion="18" />
-    
+
     <uses-permission android:name="android.permission.INTERNET" />
-    
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/jobhuk"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="com.startupsourcing.jobhuk.MainActivity_JobHuk"
+            android:name="com.startupsourcing.jobhuk.JobHuk_Main"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -25,8 +25,16 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.startupsourcing.jobhuk.Hello"
+            android:name="com.startupsourcing.jobhuk.JobsDescription"
             android:label="@string/title_activity_hello" >
+        </activity>
+        <activity
+            android:name="com.startupsourcing.jobhuk.Refer"
+            android:label="@string/title_activity_refer" >
+        </activity>
+        <activity
+            android:name="com.startupsourcing.jobhuk.Login"
+            android:label="@string/title_activity_login" >
         </activity>
     </application>
 

@@ -11,18 +11,15 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-public class myAdapter extends ArrayAdapter<Object>{
+public class JobsListView extends ArrayAdapter<Object>{
+
+	ArrayList<HashMap<String,String>> values;
 	
-	private String[] values2;
-	private Context context;
-	ArrayList<HashMap> values;
-	
-	public myAdapter(Context context, int textViewResourceId,
-			  ArrayList<HashMap> list) {
+	public JobsListView(Context context, int textViewResourceId,
+			  ArrayList<HashMap<String,String>> list) {
 	
 		 super(context, textViewResourceId);
 		 values = list;
-		 this.context = context;
 		// TODO Auto-generated constructor stub
 	}
 	@Override
@@ -34,23 +31,23 @@ public class myAdapter extends ArrayAdapter<Object>{
 //			Log.i("Position.",""+position);
 			LayoutInflater inflater = (LayoutInflater)getContext().getSystemService
 				      (Context.LAYOUT_INFLATER_SERVICE);
-			row = inflater.inflate(R.layout.row,parent,false);
+			row = inflater.inflate(R.layout.activity_jobslistview,parent,false);
 		}
 
 		Log.i("Position",""+position);
 		HashMap<String,String> map = values.get(position);
 		TextView tv1 = (TextView)row.findViewById(R.id.jobtitle);
-		tv1.setText(map.get("Title"));
+		tv1.setText(map.get("Title"+position));
 		TextView tv2 = (TextView)row.findViewById(R.id.comp_name);
-		tv2.setText(map.get("Comp_name"));
+		tv2.setText(map.get("Comp_name"+position));
 		TextView tv3 = (TextView)row.findViewById(R.id.place);
-		tv3.setText(map.get("Location"));
+		tv3.setText(map.get("Location"+position));
 		TextView tv4 = (TextView)row.findViewById(R.id.emp_type);
-		tv4.setText(map.get("Job_type"));
+		tv4.setText(map.get("Job_type"+position));
 		TextView tv5 = (TextView)row.findViewById(R.id.pay_hr);
-		tv5.setText(map.get("Duration_hours"));
+		tv5.setText(map.get("Duration_hours"+position));
 		TextView tv6 = (TextView)row.findViewById(R.id.time);
-		tv6.setText(map.get("Contract_rate"));
+		tv6.setText(map.get("Contract_rate"+position));
 		
 		return row;
 	
