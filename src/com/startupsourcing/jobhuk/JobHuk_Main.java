@@ -44,8 +44,8 @@ public class JobHuk_Main extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_jobhuk_main);
 
-		String URL = "http://192.168.0.114:3000/api/jobs/";
-//		String URL = "http://staging.jobhuk.com/api/jobs";
+//		String URL = "http://192.168.0.114:3000/api/jobs/";
+		String URL = "http://staging.jobhuk.com/api/jobs";
 //		String URL = "https://www.jobhuk.com/api/jobs";
 
 		new jobslist().execute(URL);

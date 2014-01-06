@@ -5,7 +5,11 @@
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_hello"></string>
-    <string name="title_activity_refer">Refer</string>
-    <string name="title_activity_login">Login</string>
+    <string name="title_activity_refer"></string>
+    <string name="title_activity_login"></string>
+    <string name="title_activity_resume__upload"></string>
+    <string name="title_activity_fb__login">FB_Login</string>
+    <string name="title_activity_twitter__login">Twitter_Login</string>
+    <string name="title_activity_linked_in__login">LinkedIn_Login</string>
 
 </resources>

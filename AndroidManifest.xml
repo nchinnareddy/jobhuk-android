@@ -33,8 +33,24 @@
             android:label="@string/title_activity_refer" >
         </activity>
         <activity
-            android:name="com.startupsourcing.jobhuk.Login"
+            android:name="com.startupsourcing.jobhuk.Gmail_Login"
             android:label="@string/title_activity_login" >
+        </activity>
+        <activity
+            android:name="com.startupsourcing.jobhuk.Resume_Upload"
+            android:label="@string/title_activity_resume__upload" >
+        </activity>
+        <activity
+            android:name="com.startupsourcing.jobhuk.FB_Login"
+            android:label="@string/title_activity_fb__login" >
+        </activity>
+        <activity
+            android:name="com.startupsourcing.jobhuk.Twitter_Login"
+            android:label="@string/title_activity_twitter__login" >
+        </activity>
+        <activity
+            android:name="com.startupsourcing.jobhuk.LinkedIn_Login"
+            android:label="@string/title_activity_linked_in__login" >
         </activity>
     </application>
 

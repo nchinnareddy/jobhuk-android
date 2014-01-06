@@ -27,6 +27,9 @@ public class JobsDescription extends Activity implements OnClickListener{
 		String Contract_rate = intent.getStringExtra("Contract_rate");
 		String Finders_fee = intent.getStringExtra("Finders_fee");
 		
+		double foo =Double.parseDouble(Finders_fee);
+		int x = (int)foo;
+		
 		TextView tv1 = (TextView)findViewById(R.id.jobtitle);
 		TextView tv2 = (TextView)findViewById(R.id.comp_name);
 		TextView tv3 = (TextView)findViewById(R.id.place);
@@ -49,7 +52,7 @@ public class JobsDescription extends Activity implements OnClickListener{
 //		tv6.setText(""+Contract_rate);
 		tv7.setText(Html.fromHtml(Description));
 		
-		b1.setText("$"+Finders_fee);
+		b1.setText("$"+x);
 
 	}
 
@@ -59,11 +62,11 @@ public class JobsDescription extends Activity implements OnClickListener{
 		switch(v.getId())
 		{
 		case R.id.b1:
-			Intent refer = new Intent(JobsDescription.this,Refer.class);
+			Intent refer = new Intent(JobsDescription.this,Gmail_Login.class);
 			startActivity(refer);
 			break;
 		case R.id.b2:
-			Intent refer1 = new Intent(JobsDescription.this,Refer.class);
+			Intent refer1 = new Intent(JobsDescription.this,Gmail_Login.class);
 			startActivity(refer1);
 			break;
 		}
