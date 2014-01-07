@@ -12,67 +12,55 @@ import android.widget.Button;
 import android.widget.TextView;
 
 public class Refer extends Activity implements OnClickListener{
-	
-	 private static final int PICKFILE_RESULT_CODE = 1;
-	 TextView result;
+
+	Button fb,twitter,linkedin,gmail,upload,submit;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_refer);
 		
-		File listFile[] = android.os.Environment.getExternalStorageDirectory().listFiles();
+		fb = (Button) findViewById(R.id.fb);
+		linkedin = (Button) findViewById(R.id.linked);
+		twitter = (Button) findViewById(R.id.twitter);
+		gmail = (Button) findViewById(R.id.google);
+		upload = (Button) findViewById(R.id.upload);
+		submit = (Button) findViewById(R.id.submit);
 		
-		Button upload  = (Button) findViewById(R.id.upload);
+		fb.setOnClickListener(this);
+		linkedin.setOnClickListener(this);
+		twitter.setOnClickListener(this);
+		gmail.setOnClickListener(this);
 		upload.setOnClickListener(this);
-/*		
-		if (listFile != null) 
-			{
-	        for (int i = 0; i < listFile.length; i++) 
-	        	{
-	        	Log.i("Result",listFile[i].getName());
-	        	
-	        	File localFile[] = listFile[i].listFiles();
-	        	
-	        	for(int j=0; j<localFile.length; j++)
-	        	{
-	        		Log.i("Result",localFile[j].getName());
-		              if (localFile[j].getName().endsWith(".pdf"))
-		              {
-		                Log.i("Result",".pdf file found");   
-		              }
-	        	}       	
-	            }
-	        }*/
+		submit.setOnClickListener(this);
 		
-		Log.i("dir",""+listFile.length);
-		}
-
-
-		@Override
-		public void onClick(View v) {
-			// TODO Auto-generated method stub
-			switch(v.getId())
-			{
-			case R.id.upload:
-				Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-		        intent.setType("file/*");
-		        startActivityForResult(intent,PICKFILE_RESULT_CODE);
-				break;
-			}
-			
-		}
 		
-		 @Override
-		 protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		  // TODO Auto-generated method stub
-			 super.onActivityResult(requestCode, resultCode, data);
-			 if(requestCode == PICKFILE_RESULT_CODE )
-			 {
-			   if(resultCode==RESULT_OK){
-			    String FilePath = data.getData().getPath();
-			    Log.i("Result",FilePath);
-			   }
-		  }
-		 }
+	}
+	@Override
+	public void onClick(View v) {
+		// TODO Auto-generated method stub
+		switch(v.getId())
+		{
+		case R.id.fb:
+			Intent fb = new Intent(Refer.this,FB_Login.class);
+			startActivity(fb);
+			break;
+		case R.id.linked:
+			Intent linked = new Intent(Refer.this,LinkedIn_Login.class);
+			startActivity(linked);
+			break;
+		case R.id.twitter:
+			Intent twitter = new Intent(Refer.this,Twitter_Login.class);
+			startActivity(twitter);
+			break;
+		case R.id.google:
+			Intent google = new Intent(Refer.this,Gmail_Login.class);
+			startActivity(google);
+			break;
+		case R.id.upload:
+			break;
+		case R.id.submit:
+			break;
+		}
+	}
 }
 

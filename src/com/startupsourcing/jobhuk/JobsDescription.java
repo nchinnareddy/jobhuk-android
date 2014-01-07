@@ -62,11 +62,11 @@ public class JobsDescription extends Activity implements OnClickListener{
 		switch(v.getId())
 		{
 		case R.id.b1:
-			Intent refer = new Intent(JobsDescription.this,Gmail_Login.class);
+			Intent refer = new Intent(JobsDescription.this,Refer.class);
 			startActivity(refer);
 			break;
 		case R.id.b2:
-			Intent refer1 = new Intent(JobsDescription.this,Gmail_Login.class);
+			Intent refer1 = new Intent(JobsDescription.this,Refer.class);
 			startActivity(refer1);
 			break;
 		}

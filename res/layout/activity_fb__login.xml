@@ -8,11 +8,11 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".FB_Login" >
 
-    <TextView
+   <TextView
         android:id="@+id/email"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Login"/>
+        android:text="Email"/>
     <EditText
 		android:id="@+id/email_edit"
 		android:layout_marginTop="5dp"
@@ -36,12 +36,13 @@
 		android:layout_height="wrap_content"
 		android:layout_gravity="center"
 		android:inputType="textPassword"/>
+    
     <Button 
         android:id="@+id/submit"
         android:layout_marginTop="5dp"
         android:layout_below="@+id/password_edit"
         android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:text="Submit"/>
+		android:text="Login"/>
 
 </RelativeLayout>
