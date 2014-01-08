@@ -40,7 +40,7 @@ public class Gmail_Login extends Activity implements OnClickListener{
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_login);
+		setContentView(R.layout.activity_gmail_login);
 		
 		httpPost = new HttpPost("http://staging.jobhuk.com/api/users/authentication");
 		

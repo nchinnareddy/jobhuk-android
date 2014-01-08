@@ -23,12 +23,14 @@
         android:id="@+id/fb"
         android:text="Facebook"
         android:layout_weight="1"
+        android:textSize="12sp"
         android:layout_below="@+id/edit3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
         <Button 
         android:id="@+id/twitter"
         android:text="Twitter"
+        android:textSize="12sp"
         android:layout_weight="1"
         android:layout_below="@+id/edit3"
         android:layout_width="wrap_content"
@@ -36,12 +38,14 @@
         <Button 
         android:id="@+id/linked"
         android:layout_weight="1"
+        android:textSize="12sp"
         android:text="LinkedIn"
         android:layout_below="@+id/edit3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
         <Button 
         android:id="@+id/google"
+        android:textSize="12sp"
         android:layout_weight="1"
         android:text="Google+"
         android:layout_below="@+id/edit3"

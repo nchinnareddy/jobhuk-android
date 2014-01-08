@@ -34,7 +34,7 @@ public class JobsListView extends ArrayAdapter<Object>{
 			row = inflater.inflate(R.layout.activity_jobslistview,parent,false);
 		}
 
-		Log.i("Position",""+position);
+//		Log.i("Position",""+position);
 		HashMap<String,String> map = values.get(position);
 		TextView tv1 = (TextView)row.findViewById(R.id.jobtitle);
 		tv1.setText(map.get("Title"+position));

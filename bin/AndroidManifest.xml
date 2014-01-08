@@ -44,13 +44,28 @@
             android:name="com.startupsourcing.jobhuk.FB_Login"
             android:label="@string/title_activity_fb__login" >
         </activity>
+        
         <activity
             android:name="com.startupsourcing.jobhuk.Twitter_Login"
             android:label="@string/title_activity_twitter__login" >
+                <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="oauth" android:host="t4jsample"/>
+            	</intent-filter>
         </activity>
+        
         <activity
             android:name="com.startupsourcing.jobhuk.LinkedIn_Login"
-            android:label="@string/title_activity_linked_in__login" >
+            android:label="@string/title_activity_linked_in__login" 
+            android:launchMode="singleTop" >
+                <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:host="litestcalback" android:scheme="x-oauthflow-linkedin" />
+           		</intent-filter>
         </activity>
     </application>
 
