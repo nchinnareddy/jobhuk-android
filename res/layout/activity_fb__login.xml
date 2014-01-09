@@ -12,9 +12,8 @@
     <Button 
         android:id="@+id/submit"
         android:layout_marginTop="5dp"
-        android:layout_below="@+id/password_edit"
         android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:text="Login with Gmail"/>
+		android:text="Login with Facebook"/>
 
 </RelativeLayout>

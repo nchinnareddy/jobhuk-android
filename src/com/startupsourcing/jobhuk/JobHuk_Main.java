@@ -21,12 +21,14 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ListView;
-import android.widget.Toast;
 
-public class JobHuk_Main extends Activity {
+public class JobHuk_Main extends Activity implements OnClickListener {
 	
 	String[] values = null;
 	public ArrayList<String> Title = new ArrayList<String>();
@@ -39,6 +41,7 @@ public class JobHuk_Main extends Activity {
 	public ArrayList<String> Finders_fee = new ArrayList<String>();
 	
 	ListView listview;
+	Button prev,one,two,three,four,five,next;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -51,7 +54,30 @@ public class JobHuk_Main extends Activity {
 		new jobslist().execute(URL);
 		
 		listview	= (ListView) findViewById(R.id.listview);
+		
+		prev = (Button) findViewById(R.id.prev);
+		one = (Button) findViewById(R.id.one);
+		two = (Button) findViewById(R.id.two);
+		three = (Button) findViewById(R.id.three);
+		four = (Button) findViewById(R.id.four);
+		five = (Button) findViewById(R.id.five);
+		next = (Button) findViewById(R.id.next);
+		
+		one.setOnClickListener(this);
+		two.setOnClickListener(this);
+		three.setOnClickListener(this);
+		four.setOnClickListener(this);
+		five.setOnClickListener(this);
 	
+	}
+	
+	public void show_Pagelist(int Pagenum)
+	{
+		String URL = "http://staging.jobhuk.com/api/jobs?page="+Pagenum+"";
+		Log.i("URL",URL);
+		new jobslist().execute(URL);
+		Log.i("Pagenum",""+Pagenum);
+		
 	}
 	
 	public class jobslist extends AsyncTask<String, Void, JSONArray>
@@ -131,15 +157,16 @@ public class JobHuk_Main extends Activity {
 				}
 			}
 			JobsListView adapter = new JobsListView(JobHuk_Main.this, R.layout.activity_jobslistview, list2);
-		  	adapter.notifyDataSetChanged();
+		  	
 	        listview.setAdapter(adapter);
+	        ((BaseAdapter)adapter).notifyDataSetChanged();
 	        
 	        listview.setOnItemClickListener(new OnItemClickListener() {
 	        	  public void onItemClick(AdapterView<?> parent, View view,
 	        	    int position, long id) {
-	        		Toast.makeText(getApplicationContext(),
-	        	      "Click ListItem Number " + position, Toast.LENGTH_SHORT)
-	        	      .show();
+//	        		Toast.makeText(getApplicationContext(),
+//	        	      "Click ListItem Number " + position, Toast.LENGTH_SHORT)
+//	        	      .show();
 	        		  Intent hello = new Intent(JobHuk_Main.this,JobsDescription.class);
 	        		  hello.putExtra("Title", Title.get(position));
 	        		  hello.putExtra("Comp_name", Comp_name.get(position));
@@ -154,5 +181,32 @@ public class JobHuk_Main extends Activity {
 	        	});
 		}
 		
+	}
+ 
+	@Override
+	public void onClick(View v) {
+		// TODO Auto-generated method stub
+		switch(v.getId())
+		{
+		case R.id.prev:
+			break;
+		case R.id.one:
+			show_Pagelist(Integer.parseInt(one.getText().toString()));
+			break;
+		case R.id.two:
+			show_Pagelist(Integer.parseInt(two.getText().toString()));
+			break;
+		case R.id.three:
+			show_Pagelist(Integer.parseInt(three.getText().toString()));
+			break;
+		case R.id.four:
+			show_Pagelist(Integer.parseInt(four.getText().toString()));
+			break;
+		case R.id.five:
+			show_Pagelist(Integer.parseInt(five.getText().toString()));
+			break;
+		case R.id.next:
+			break;	
+		}
 	}
 }

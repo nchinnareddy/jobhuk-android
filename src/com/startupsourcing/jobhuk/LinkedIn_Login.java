@@ -36,23 +36,20 @@ public class LinkedIn_Login extends Activity implements OnClickListener{
 	public static final String OAUTH_CALLBACK_URL = OAUTH_CALLBACK_SCHEME
 	+ "://www.jobhuk.com" + OAUTH_CALLBACK_HOST;
 	
-	LinkedInOAuthService oAuthService = LinkedInOAuthServiceFactory
-			.getInstance().createLinkedInOAuthService(CONSUMER_KEY,
-			CONSUMER_SECRET);
-	LinkedInApiClientFactory factory = LinkedInApiClientFactory
-			.newInstance(CONSUMER_KEY, CONSUMER_SECRET);
-			LinkedInRequestToken linkedIn_Token;
-			LinkedInApiClient client;
-			
 			TextView tv = null;
 			Button signIn, btn_status, post;
 			EditText currentStatus;
+			
+			LinkedInApiClientFactory factory;
+			LinkedInOAuthService oAuthService;
+			LinkedInRequestToken linkedIn_Token;
+			LinkedInApiClient client;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_linkedin__login);
-		
+
 		if (android.os.Build.VERSION.SDK_INT > 9) {
 	        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
 	        StrictMode.setThreadPolicy(policy);
@@ -67,24 +64,7 @@ public class LinkedIn_Login extends Activity implements OnClickListener{
 		signIn.setOnClickListener(this);
 		btn_status.setOnClickListener(this);
 		post.setOnClickListener(this);
-		
-		linkedIn_Token = oAuthService.getOAuthRequestToken(OAUTH_CALLBACK_URL);
-		Log.i("Token",""+linkedIn_Token);
-		Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(linkedIn_Token
-		.getAuthorizationUrl()));
-		startActivity(i);
-		
-//		onNewIntent(getIntent());
-	}
-	
-//	@Override
-//	protected void onNewIntent(Intent intent) 
-//	{
-//	  super.onNewIntent(intent);
-//	  Log.i("Hello","How are you");
-//	  //code
-//	}
-	
+	}	
 	@Override
 	public void onDestroy() {
 	    Log.i("Startup", "onDestroy()");
@@ -96,13 +76,19 @@ public class LinkedIn_Login extends Activity implements OnClickListener{
 		// TODO Auto-generated method stub
 		switch (v.getId()) {
 		case R.id.btn_sign:
-//			new request().execute();
-		linkedIn_Token = oAuthService.getOAuthRequestToken(OAUTH_CALLBACK_URL);
-		Log.i("Token",""+linkedIn_Token);
-		Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(linkedIn_Token
-		.getAuthorizationUrl()));
-		startActivity(i);
-//		onNewIntent(i);
+			oAuthService = LinkedInOAuthServiceFactory
+			.getInstance().createLinkedInOAuthService(CONSUMER_KEY,
+			CONSUMER_SECRET);
+			factory = LinkedInApiClientFactory
+			.newInstance(CONSUMER_KEY, CONSUMER_SECRET);
+			
+			linkedIn_Token = oAuthService.getOAuthRequestToken(OAUTH_CALLBACK_URL);
+			Log.i("Token",""+linkedIn_Token);
+			
+			Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(linkedIn_Token
+			.getAuthorizationUrl()));
+			startActivity(i);
+
 		break;
 		case R.id.btn_post:
 		post.setVisibility(View.VISIBLE);

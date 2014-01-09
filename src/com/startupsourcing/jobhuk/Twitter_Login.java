@@ -93,8 +93,7 @@ public class Twitter_Login extends Activity {
         lblUserName = (TextView) findViewById(R.id.lblUserName);
  
         // Shared Preferences
-        mSharedPreferences = getApplicationContext().getSharedPreferences(
-                "MyPref", 0);
+        mSharedPreferences = getPreferences(MODE_PRIVATE);
         
         btnLoginTwitter.setOnClickListener(new View.OnClickListener() {
         	 
@@ -139,12 +138,36 @@ public class Twitter_Login extends Activity {
              
             TwitterFactory factory = new TwitterFactory(configuration);
             twitter = factory.getInstance();
+            
+            SharedPreferences.Editor editor = mSharedPreferences.edit();
+//            editor.putBoolean(PREF_KEY_TWITTER_LOGIN,true);
+            editor.commit();
+            editor.clear();
  
             try {
                 requestToken = twitter
                         .getOAuthRequestToken(TWITTER_CALLBACK_URL);
+                Log.i("TwitterToken",""+requestToken);
+
+//                Uri uri = getIntent().getData();
+//                Log.i("Uri",""+uri);
+//                if (uri != null && uri.toString().startsWith(TWITTER_CALLBACK_URL)) {
+//                    // oAuth verifier
+//                    String verifier = uri
+//                            .getQueryParameter(URL_TWITTER_OAUTH_VERIFIER);
+//                    AccessToken accessToken = twitter.getOAuthAccessToken(requestToken, verifier);
+//                    
+//                    long userID = accessToken.getUserId();
+//                    User user = twitter.showUser(userID);
+//                    String username = user.getName();
+//                    
+//                    Log.i("Username",""+username);
+//                    }
+//                
                 this.startActivity(new Intent(Intent.ACTION_VIEW, Uri
                         .parse(requestToken.getAuthenticationURL())));
+                
+                
             } catch (TwitterException e) {
                 e.printStackTrace();
             }
