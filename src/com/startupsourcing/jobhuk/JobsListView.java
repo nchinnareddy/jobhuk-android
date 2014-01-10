@@ -37,6 +37,7 @@ public class JobsListView extends ArrayAdapter<Object>{
 //		Log.i("Position",""+position);
 		HashMap<String,String> map = values.get(position);
 		TextView tv1 = (TextView)row.findViewById(R.id.jobtitle);
+//		Log.i("Title",map.get("Title"+position));
 		tv1.setText(map.get("Title"+position));
 		TextView tv2 = (TextView)row.findViewById(R.id.comp_name);
 		tv2.setText(map.get("Comp_name"+position));

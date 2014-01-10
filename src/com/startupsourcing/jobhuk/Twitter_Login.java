@@ -1,34 +1,25 @@
 package com.startupsourcing.jobhuk;
 
-import android.os.Bundle;
-import android.app.Activity;
-import android.view.Menu;
+import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
-import twitter4j.User;
-import twitter4j.auth.AccessToken;
 import twitter4j.auth.RequestToken;
 import twitter4j.conf.Configuration;
 import twitter4j.conf.ConfigurationBuilder;
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
-import android.content.pm.ActivityInfo;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.StrictMode;
-import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 public class Twitter_Login extends Activity {
@@ -58,16 +49,7 @@ public class Twitter_Login extends Activity {
     
     // Login button
     Button btnLoginTwitter;
-    // Update status button
-    Button btnUpdateStatus;
-    // Logout button
-    Button btnLogoutTwitter;
-    // EditText for update
-    EditText txtUpdate;
-    // lbl update
-    TextView lblUpdate;
-    TextView lblUserName;
- 
+
     // Progress dialog
     ProgressDialog pDialog;
  
@@ -86,12 +68,7 @@ public class Twitter_Login extends Activity {
 		
         // All UI elements
         btnLoginTwitter = (Button) findViewById(R.id.btnLoginTwitter);
-        btnUpdateStatus = (Button) findViewById(R.id.btnUpdateStatus);
-        btnLogoutTwitter = (Button) findViewById(R.id.btnLogoutTwitter);
-        txtUpdate = (EditText) findViewById(R.id.txtUpdateStatus);
-        lblUpdate = (TextView) findViewById(R.id.lblUpdate);
-        lblUserName = (TextView) findViewById(R.id.lblUserName);
- 
+
         // Shared Preferences
         mSharedPreferences = getPreferences(MODE_PRIVATE);
         
@@ -138,35 +115,23 @@ public class Twitter_Login extends Activity {
              
             TwitterFactory factory = new TwitterFactory(configuration);
             twitter = factory.getInstance();
-            
+                      
             SharedPreferences.Editor editor = mSharedPreferences.edit();
-//            editor.putBoolean(PREF_KEY_TWITTER_LOGIN,true);
+//          editor.putBoolean(PREF_KEY_TWITTER_LOGIN,true);
             editor.commit();
             editor.clear();
  
             try {
-                requestToken = twitter
-                        .getOAuthRequestToken(TWITTER_CALLBACK_URL);
+                requestToken = twitter.getOAuthRequestToken(TWITTER_CALLBACK_URL);
                 Log.i("TwitterToken",""+requestToken);
 
-//                Uri uri = getIntent().getData();
-//                Log.i("Uri",""+uri);
-//                if (uri != null && uri.toString().startsWith(TWITTER_CALLBACK_URL)) {
-//                    // oAuth verifier
-//                    String verifier = uri
-//                            .getQueryParameter(URL_TWITTER_OAUTH_VERIFIER);
-//                    AccessToken accessToken = twitter.getOAuthAccessToken(requestToken, verifier);
-//                    
-//                    long userID = accessToken.getUserId();
-//                    User user = twitter.showUser(userID);
-//                    String username = user.getName();
-//                    
-//                    Log.i("Username",""+username);
-//                    }
-//                
                 this.startActivity(new Intent(Intent.ACTION_VIEW, Uri
                         .parse(requestToken.getAuthenticationURL())));
                 
+                onNewIntent(getIntent());
+                
+//                Status status = twitter.updateStatus("hello");
+//                Log.e("Successfully updated the status to [", ""  + status.getText() + "].");
                 
             } catch (TwitterException e) {
                 e.printStackTrace();
@@ -176,6 +141,24 @@ public class Twitter_Login extends Activity {
             Toast.makeText(getApplicationContext(),
                     "Already Logged into twitter", Toast.LENGTH_LONG).show();
         }
+    }
+    
+    protected void onPause()
+    {
+    	super.onPause();
+    	Log.i("Hello","onPause()");
+    }
+    
+    protected void onResume()
+    {
+    	super.onResume();
+    	Log.i("Hello","onResume()");
+    }
+    
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        Log.i("Hello_TWitter",""+intent.getData());
+        setIntent(intent);
     }
  
     /**

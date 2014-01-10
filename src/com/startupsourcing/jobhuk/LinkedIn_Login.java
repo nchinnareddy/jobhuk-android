@@ -1,5 +1,6 @@
 package com.startupsourcing.jobhuk;
 
+import oauth.signpost.OAuthConsumer;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
@@ -61,66 +62,23 @@ public class LinkedIn_Login extends Activity implements OnClickListener{
 		post = (Button) findViewById(R.id.btn_send);
 		currentStatus = (EditText) findViewById(R.id.edt_post);
 
-		signIn.setOnClickListener(this);
-		btn_status.setOnClickListener(this);
-		post.setOnClickListener(this);
-	}	
-	@Override
-	public void onDestroy() {
-	    Log.i("Startup", "onDestroy()");
-	    super.onDestroy();
-	}
-
-	@Override
-	public void onClick(View v) {
-		// TODO Auto-generated method stub
-		switch (v.getId()) {
-		case R.id.btn_sign:
 			oAuthService = LinkedInOAuthServiceFactory
-			.getInstance().createLinkedInOAuthService(CONSUMER_KEY,
-			CONSUMER_SECRET);
-			factory = LinkedInApiClientFactory
-			.newInstance(CONSUMER_KEY, CONSUMER_SECRET);
+			.getInstance().createLinkedInOAuthService(CONSUMER_KEY,CONSUMER_SECRET);
+			factory = LinkedInApiClientFactory.newInstance(CONSUMER_KEY, CONSUMER_SECRET);
 			
 			linkedIn_Token = oAuthService.getOAuthRequestToken(OAUTH_CALLBACK_URL);
 			Log.i("Token",""+linkedIn_Token);
 			
-			Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(linkedIn_Token
-			.getAuthorizationUrl()));
+			Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(linkedIn_Token.getAuthorizationUrl()));
 			startActivity(i);
 
-		break;
-		case R.id.btn_post:
-		post.setVisibility(View.VISIBLE);
-		currentStatus.setVisibility(View.VISIBLE);
-		break;
-		}
 	}
-/*	
-	
-	
-	public class request extends AsyncTask<Void, Void, Void>
-	{
-
-		@Override
-		protected Void doInBackground(Void... params) {
-			// TODO Auto-generated method stub
-			linkedIn_Token = oAuthService.getOAuthRequestToken(OAUTH_CALLBACK_URL);
-			Log.i("URL",linkedIn_Token.getAuthorizationUrl());
-			Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(linkedIn_Token
-			.getAuthorizationUrl()));
-			startActivity(i);
-			return null;
-		}
-		
-	}*/
-	
 
 @Override
 protected void onNewIntent(Intent intent) {
 super.onNewIntent(intent);
-setIntent(intent);
-btn_status.setVisibility(View.VISIBLE);
+//setIntent(intent);
+//btn_status.setVisibility(View.VISIBLE);
 Log.i("Hello","onNewIntent()");
 String verifier = intent.getData().getQueryParameter("oauth_verifier");
 Log.i("Hello",""+verifier);
@@ -176,6 +134,18 @@ Log.e("Industry      ", "" + p.getIndustry());
 Log.e("      ", "" + "*****************");
 }
 
+}
+
+/*private OAuthConsumer getConsumer() {
+    OAuthConsumer consumer = new CommonsHttpOAuthConsumer(CONSUMER_KEY, CONSUMER_SECRET);
+    consumer.setTokenWithSecret(accessToken.getToken(), accessToken.getTokenSecret());
+    return consumer;
+}*/
+
+@Override
+public void onClick(View v) {
+	// TODO Auto-generated method stub
+	
 }
 
 }

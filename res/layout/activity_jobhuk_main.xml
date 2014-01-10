@@ -16,37 +16,46 @@
         android:id="@+id/prev"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textSize="12sp"
         android:text="Prev"/>
         <Button 
         android:id="@+id/one"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textSize="12sp"
         android:text="1"/>
         <Button 
         android:id="@+id/two"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textSize="12sp"
         android:text="2"/>
         <Button 
         android:id="@+id/three"
+        android:textSize="12sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="3"/>
         <Button 
         android:id="@+id/four"
+        android:textSize="12sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:visibility="gone"
         android:text="4"/>
         <Button 
         android:id="@+id/five"
+        android:textSize="12sp"
         android:layout_width="wrap_content"
+        android:visibility="gone"
         android:layout_height="wrap_content"
         android:text="5"/>
         <Button 
         android:id="@+id/next"
+        android:textSize="12sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Nex"/>    
+        android:text="Next"/>    
     
 </LinearLayout>
 

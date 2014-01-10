@@ -52,7 +52,8 @@
         
         <activity
             android:name="com.startupsourcing.jobhuk.Twitter_Login"
-            android:label="@string/title_activity_twitter__login" >
+            android:label="@string/title_activity_twitter__login" 
+            android:launchMode="singleTop" >
                 <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />

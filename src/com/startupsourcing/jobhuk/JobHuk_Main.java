@@ -24,13 +24,15 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 public class JobHuk_Main extends Activity implements OnClickListener {
 	
 	String[] values = null;
+	String jobs_count;
 	public ArrayList<String> Title = new ArrayList<String>();
 	public ArrayList<String> Comp_name = new ArrayList<String>();
 	public ArrayList<String> Location = new ArrayList<String>();
@@ -42,6 +44,7 @@ public class JobHuk_Main extends Activity implements OnClickListener {
 	
 	ListView listview;
 	Button prev,one,two,three,four,five,next;
+	int Pagenum,TotalPages,no_of_jobs;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -63,21 +66,39 @@ public class JobHuk_Main extends Activity implements OnClickListener {
 		five = (Button) findViewById(R.id.five);
 		next = (Button) findViewById(R.id.next);
 		
+		prev.setOnClickListener(this);
 		one.setOnClickListener(this);
 		two.setOnClickListener(this);
 		three.setOnClickListener(this);
 		four.setOnClickListener(this);
 		five.setOnClickListener(this);
+		next.setOnClickListener(this);
 	
 	}
 	
-	public void show_Pagelist(int Pagenum)
+	public void show_Pagelist(int Pageno)
 	{
-		String URL = "http://staging.jobhuk.com/api/jobs?page="+Pagenum+"";
-		Log.i("URL",URL);
-		new jobslist().execute(URL);
-		Log.i("Pagenum",""+Pagenum);
+		Pagenum = Pageno;
+		if(Pagenum<TotalPages)
+		{
+			if(Pagenum==1)
+				prev.setVisibility(View.GONE);
+			else
+				prev.setVisibility(View.VISIBLE);
+			
+			Log.i("If...Pagenum",""+Pagenum);
+			String URL = "http://staging.jobhuk.com/api/jobs?page="+Pagenum+"";
+			new jobslist().execute(URL);
+		}
 		
+		else
+		{
+			Log.i("Else...Pagenum",""+Pagenum);
+			String URL = "http://staging.jobhuk.com/api/jobs";
+    		Toast.makeText(getApplicationContext(),
+	        	      "Last page has been reached ", Toast.LENGTH_SHORT).show();
+			new jobslist().execute(URL);
+		}
 	}
 	
 	public class jobslist extends AsyncTask<String, Void, JSONArray>
@@ -99,12 +120,22 @@ public class JobHuk_Main extends Activity implements OnClickListener {
 				HttpResponse response = client.execute(httpGet);
 				HttpEntity entity = response.getEntity();
 	            Object content = EntityUtils.toString(entity);
-	            Log.i("Hello",content.toString());
+//	            Log.i("Hello",content.toString());
 	            
 	            try {
 					JSONObject jsonResponse = new JSONObject(content.toString());
 					JSONObject resultObject = jsonResponse.getJSONObject("resultObject");
+					
+					jobs_count = resultObject.getString("jobs_count");
 					jobs = resultObject.getJSONArray("jobs");
+					
+					no_of_jobs = Integer.parseInt(jobs_count);
+					
+					if(no_of_jobs%10==0)
+						TotalPages = no_of_jobs/10;
+					else
+						TotalPages = no_of_jobs/10 +1;
+					
 				} catch (JSONException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -123,7 +154,9 @@ public class JobHuk_Main extends Activity implements OnClickListener {
 //		
 		protected void onPostExecute(JSONArray jobs)
 		{
+			
 			hash = new HashMap<String,String>() ;
+			list2.removeAll(list2);
 			
 			for(int i=0;i<jobs.length();i++)
 			{
@@ -131,6 +164,7 @@ public class JobHuk_Main extends Activity implements OnClickListener {
 				JSONObject jobs_Sub;
 				try {
 					jobs_Sub = jobs.getJSONObject(i);
+					
 					Title.add(jobs_Sub.getString("title"));
 					Comp_name.add(jobs_Sub.getString("company_name"));
 					Description.add(jobs_Sub.getString("description"));
@@ -139,34 +173,34 @@ public class JobHuk_Main extends Activity implements OnClickListener {
 					Duration_hours.add(jobs_Sub.getString("duration_hours"));
 					Contract_rate.add(jobs_Sub.getString("contract_rate"));
 					Finders_fee.add(jobs_Sub.getString("finders_fee_amount"));
-					
-					hash.put("Title"+i,Title.get(i));
-					hash.put("Comp_name"+i,Comp_name.get(i));
-					hash.put("Location"+i, Location.get(i));
-					hash.put("Job_type"+i, Job_type.get(i));
-					hash.put("Duration_hours"+i,Duration_hours.get(i));
-					hash.put("Contract_rate"+i,Contract_rate.get(i));
+
+					hash.put("Title"+i,jobs_Sub.getString("title"));
+					hash.put("Comp_name"+i,jobs_Sub.getString("company_name"));
+					hash.put("Location"+i, jobs_Sub.getString("location"));
+					hash.put("Job_type"+i, jobs_Sub.getString("job_type"));
+					hash.put("Duration_hours"+i,jobs_Sub.getString("duration_hours"));
+					hash.put("Contract_rate"+i,jobs_Sub.getString("contract_rate"));
 					
 					list2.add(hash);
-					
-//					Log.i("Hello",result.get(i)+"   "+result.get(i)+"  "+result.get(i));
+
 					} 
 				catch (JSONException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
+
 			JobsListView adapter = new JobsListView(JobHuk_Main.this, R.layout.activity_jobslistview, list2);
+		  	listview.setAdapter(adapter);
 		  	
-	        listview.setAdapter(adapter);
-	        ((BaseAdapter)adapter).notifyDataSetChanged();
+	        adapter.notifyDataSetChanged();
 	        
 	        listview.setOnItemClickListener(new OnItemClickListener() {
 	        	  public void onItemClick(AdapterView<?> parent, View view,
 	        	    int position, long id) {
-//	        		Toast.makeText(getApplicationContext(),
-//	        	      "Click ListItem Number " + position, Toast.LENGTH_SHORT)
-//	        	      .show();
+	        		Toast.makeText(getApplicationContext(),
+	        	      "Click ListItem Number " + position, Toast.LENGTH_SHORT)
+	        	      .show();
 	        		  Intent hello = new Intent(JobHuk_Main.this,JobsDescription.class);
 	        		  hello.putExtra("Title", Title.get(position));
 	        		  hello.putExtra("Comp_name", Comp_name.get(position));
@@ -182,6 +216,13 @@ public class JobHuk_Main extends Activity implements OnClickListener {
 		}
 		
 	}
+	
+	public class Pair
+	{
+	    public int Pages;
+	    public int[] Jobs;
+	}
+	
  
 	@Override
 	public void onClick(View v) {
@@ -189,6 +230,8 @@ public class JobHuk_Main extends Activity implements OnClickListener {
 		switch(v.getId())
 		{
 		case R.id.prev:
+			int prev = Pagenum-1;
+			show_Pagelist(prev);
 			break;
 		case R.id.one:
 			show_Pagelist(Integer.parseInt(one.getText().toString()));
@@ -206,6 +249,8 @@ public class JobHuk_Main extends Activity implements OnClickListener {
 			show_Pagelist(Integer.parseInt(five.getText().toString()));
 			break;
 		case R.id.next:
+			int next = Pagenum+1;
+			show_Pagelist(next);
 			break;	
 		}
 	}
