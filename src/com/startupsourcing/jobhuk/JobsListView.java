@@ -24,7 +24,7 @@ public class JobsListView extends ArrayAdapter<Object>{
 	}
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		
+//		Log.i("Hello","Call from Update");
 		View row = convertView;
 		if(row == null)
 		{
@@ -46,7 +46,7 @@ public class JobsListView extends ArrayAdapter<Object>{
 		TextView tv4 = (TextView)row.findViewById(R.id.emp_type);
 		tv4.setText(map.get("Job_type"+position));
 		TextView tv5 = (TextView)row.findViewById(R.id.pay_hr);
-		tv5.setText(map.get("Duration_hours"+position));
+		tv5.setText(map.get("Duration_hours"+position)+" hrs");
 		TextView tv6 = (TextView)row.findViewById(R.id.time);
 		tv6.setText(map.get("Contract_rate"+position));
 		

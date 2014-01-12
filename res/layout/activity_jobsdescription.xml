@@ -72,6 +72,15 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"/>
     <TextView 
+        android:id="@+id/time"
+        android:textColor="#3CB371"
+        android:padding="5dp"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:textSize="12sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+   <TextView 
         android:id="@+id/pay_hr"
         android:textColor="#3CB371"
         android:padding="5dp"

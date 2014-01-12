@@ -34,8 +34,8 @@ public class JobsDescription extends Activity implements OnClickListener{
 		TextView tv2 = (TextView)findViewById(R.id.comp_name);
 		TextView tv3 = (TextView)findViewById(R.id.place);
 		TextView tv4 = (TextView)findViewById(R.id.emp_type);
-		TextView tv5 = (TextView)findViewById(R.id.pay_hr);
-		TextView tv6 = (TextView)findViewById(R.id.time);
+		TextView tv5 = (TextView)findViewById(R.id.time);
+		TextView tv6 = (TextView)findViewById(R.id.pay_hr);
 		TextView tv7 = (TextView)findViewById(R.id.description);
 		
 		Button b1 = (Button) findViewById(R.id.b1);
@@ -49,7 +49,7 @@ public class JobsDescription extends Activity implements OnClickListener{
 		tv3.setText(Location);
 		tv4.setText(Job_type);
 		tv5.setText(Duration_hours);
-//		tv6.setText(""+Contract_rate);
+		tv6.setText(""+Contract_rate);
 		tv7.setText(Html.fromHtml(Description));
 		
 		b1.setText("$"+x);
