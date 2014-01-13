@@ -1,8 +1,8 @@
 package com.startupsourcing.jobhuk;
 
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 
 import org.apache.http.HttpEntity;
@@ -32,7 +32,7 @@ import android.widget.Toast;
 public class JobHuk_Main extends Activity implements OnClickListener {
 	
 	String[] values = null;
-	String jobs_count;
+	String jobs_count,posted_ago;
 	public ArrayList<String> Title = new ArrayList<String>();
 	public ArrayList<String> Comp_name = new ArrayList<String>();
 	public ArrayList<String> Location = new ArrayList<String>();
@@ -46,12 +46,14 @@ public class JobHuk_Main extends Activity implements OnClickListener {
 	
 	ListView listview;
 	JobsListView adapter;
-	Button prev,one,two,three,four,five,next,update,amount;
+	Button prev,one,two,three,four,five,next,update,amount,job_type;
 	int Pagenum,TotalPages,no_of_jobs,button_count;
 	ArrayList<HashMap<String,String>> list2 = new ArrayList<HashMap<String,String>>();
 	ArrayList<HashMap<String,String>> list3 = new ArrayList<HashMap<String,String>>();
+	ArrayList<HashMap<String,String>> Fulltime = new ArrayList<HashMap<String,String>>();
+	ArrayList<HashMap<String,String>> Contract = new ArrayList<HashMap<String,String>>();
 	
-	long Unix_time;
+	long Unix_time,Database_time;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +77,7 @@ public class JobHuk_Main extends Activity implements OnClickListener {
 		next = (Button) findViewById(R.id.next);
 		update = (Button) findViewById(R.id.update);
 		amount = (Button) findViewById(R.id.amount);
+		job_type = (Button) findViewById(R.id.type);
 		
 		prev.setOnClickListener(this);
 		one.setOnClickListener(this);
@@ -85,6 +88,7 @@ public class JobHuk_Main extends Activity implements OnClickListener {
 		next.setOnClickListener(this);
 		update.setOnClickListener(this);
 		amount.setOnClickListener(this);
+		job_type.setOnClickListener(this);
 		
 		prev.setEnabled(false);
 	
@@ -176,7 +180,10 @@ public class JobHuk_Main extends Activity implements OnClickListener {
 		protected void onPostExecute(JSONArray jobs)
 		{
 			
-			hash = new HashMap<String,String>() ;
+			hash = new HashMap<String,String>();
+			HashMap<String,String> fulltime = new HashMap<String,String>();
+			HashMap<String,String> contract = new HashMap<String,String>();
+			
 			list2.removeAll(list2);
 			
 			for(int i=0;i<jobs.length();i++)
@@ -195,11 +202,90 @@ public class JobHuk_Main extends Activity implements OnClickListener {
 					Duration_hours.add(jobs_Sub.getString("duration_hours"));
 					Contract_rate.add(jobs_Sub.getString("contract_rate"));
 					Finders_fee.add(jobs_Sub.getString("finders_fee_amount"));
-					Date_posted.add(jobs_Sub.getString("updated_at"));
+					
+					if(jobs_Sub.getString("job_type").equals(Fulltime))
+					{
+//						Log.i("Full","hello");
+						fulltime.put("Title"+i,jobs_Sub.getString("title"));
+						fulltime.put("Comp_name"+i,jobs_Sub.getString("company_name"));
+						fulltime.put("Location"+i, jobs_Sub.getString("location"));
+						fulltime.put("Job_type"+i, jobs_Sub.getString("job_type"));
+						fulltime.put("Duration_hours"+i,jobs_Sub.getString("duration_hours"));
+						fulltime.put("Contract_rate"+i,jobs_Sub.getString("contract_rate"));
+//						fulltime.put("Posted_ago"+i, posted_ago);
+					}
+					else
+					{
+//						Log.i("Contract","hello");
+						contract.put("Title"+i,jobs_Sub.getString("title"));
+						contract.put("Comp_name"+i,jobs_Sub.getString("company_name"));
+						contract.put("Location"+i, jobs_Sub.getString("location"));
+						contract.put("Job_type"+i, jobs_Sub.getString("job_type"));
+						contract.put("Duration_hours"+i,jobs_Sub.getString("duration_hours"));
+						contract.put("Contract_rate"+i,jobs_Sub.getString("contract_rate"));
+//						contract.put("Posted_ago"+i, posted_ago);
+					}
+					
 					
 					String str= jobs_Sub.getString("updated_at");
-					str = str.replaceAll("[^\\d-]", "");
-					Log.i("Date",str);
+					String str1[] = str.split("T");
+					Log.i("Date",str1[0]);
+					String str2[] = str1[1].split("-");
+					Log.i("Time",str2[0]);
+					
+					Timestamp timestamp = Timestamp.valueOf(str1[0] + " " +str2[0]+ ".000");
+					Database_time = timestamp.getTime()/1000L;
+					long diff = Unix_time - Database_time;
+					int No_of_days = (int) diff/86400;
+					
+					if(No_of_days>=30&&No_of_days<60)
+					{
+						posted_ago = "posted about 1 month ago" ;
+					}
+					else if(No_of_days>=60&&No_of_days<90)
+					{
+						posted_ago = "posted about 2 months ago" ;
+					}
+					else if(No_of_days>=90&&No_of_days<120)
+					{
+						posted_ago = "posted about 3 months ago" ;
+					}
+					else if(No_of_days>=120&&No_of_days<150)
+					{
+						posted_ago = "posted about 4 months ago" ;
+					}
+					else if(No_of_days>=150&&No_of_days<180)
+					{
+						posted_ago = "posted about 5 months ago" ;
+					}
+					else if(No_of_days>=180&&No_of_days<=210)
+					{
+						posted_ago = "posted about 6 months ago" ;
+					}
+					else if(No_of_days>=210&&No_of_days<240)
+					{
+						posted_ago = "posted about 7 months ago" ;
+					}
+					else if(No_of_days>=240&&No_of_days<270)
+					{
+						posted_ago = "posted about 8 month ago" ;
+					}
+					else if(No_of_days>=270&&No_of_days<300)
+					{
+						posted_ago = "posted about 9 months ago" ;
+					}
+					else if(No_of_days>=300&&No_of_days<330)
+					{
+						posted_ago = "posted about 10 months ago" ;
+					}
+					else if(No_of_days>=330&&No_of_days<360)
+					{
+						posted_ago = "posted about 11 months ago" ;
+					}
+					else
+					{
+						posted_ago = "posted "+No_of_days+" days ago";
+					}
 
 					hash.put("Title"+i,jobs_Sub.getString("title"));
 					hash.put("Comp_name"+i,jobs_Sub.getString("company_name"));
@@ -207,15 +293,17 @@ public class JobHuk_Main extends Activity implements OnClickListener {
 					hash.put("Job_type"+i, jobs_Sub.getString("job_type"));
 					hash.put("Duration_hours"+i,jobs_Sub.getString("duration_hours"));
 					hash.put("Contract_rate"+i,jobs_Sub.getString("contract_rate"));
+					hash.put("Posted_ago"+i, posted_ago);
 					
 					list2.add(hash);
-
+					Fulltime.add(fulltime);
+					Contract.add(contract);
+					
 					} 
 				catch (JSONException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				
 			}
 			int j,k;
 			for(j=list2.size()-1,k=0;j>=0&&k<list2.size();j--,k++)
@@ -229,16 +317,14 @@ public class JobHuk_Main extends Activity implements OnClickListener {
 				map1.put("Job_type"+k, map.get("Job_type"+j));
 				map1.put("Duration_hours"+k,map.get("Duration_hours"+j));
 				map1.put("Contract_rate"+k,map.get("Contract_rate"+j));
+				map1.put("Posted_ago"+k,map.get("Posted_ago"+j));
 				
 				list3.add(map1);
 			}
-	
 
 			adapter = new JobsListView(JobHuk_Main.this, R.layout.activity_jobslistview, list2);
 		  	listview.setAdapter(adapter);
 	        adapter.notifyDataSetChanged();
-	        
-
 	        
 	        listview.setOnItemClickListener(new OnItemClickListener() {
 	        	  public void onItemClick(AdapterView<?> parent, View view,
@@ -259,7 +345,6 @@ public class JobHuk_Main extends Activity implements OnClickListener {
 	        	  }
 	        	});
 		}
-		
 	}
  
 	@Override
@@ -308,6 +393,11 @@ public class JobHuk_Main extends Activity implements OnClickListener {
 			break;
 		case R.id.amount:
 			adapter = new JobsListView(JobHuk_Main.this, R.layout.activity_jobslistview, list3);
+		  	listview.setAdapter(adapter);
+	        adapter.notifyDataSetChanged();
+			break;
+		case R.id.type:
+			adapter = new JobsListView(JobHuk_Main.this, R.layout.activity_jobslistview, Contract);
 		  	listview.setAdapter(adapter);
 	        adapter.notifyDataSetChanged();
 			break;

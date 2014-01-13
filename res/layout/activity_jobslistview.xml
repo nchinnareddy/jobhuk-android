@@ -18,8 +18,9 @@
     <TextView 
         android:id="@+id/comp_name"
         android:padding="5dp"
-        android:layout_weight=".25"
+        android:layout_weight=".2"
         android:textColor="#008B8B"
+        android:enabled="true" 
         android:textSize="12sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -28,6 +29,7 @@
         android:id="@+id/place"
         android:padding="5dp"
         android:layout_weight=".5"
+        android:enabled="true" 
         android:textSize="12sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
@@ -52,6 +54,14 @@
         android:textSize="12sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
- </LinearLayout>   
+ </LinearLayout>  
+   <TextView 
+        android:id="@+id/posted"
+        android:layout_below="@+id/layout1"
+        android:layout_width="wrap_content"
+        android:textColor="#000000"
+        android:padding="5dp"
+        android:layout_height="wrap_content" 
+        />
  
 </RelativeLayout>

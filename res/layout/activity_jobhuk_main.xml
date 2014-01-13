@@ -20,6 +20,12 @@
         android:layout_height="wrap_content"
         android:text="Amount"
         android:textSize="12sp"/>
+        <Button 
+        android:id="@+id/type"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Job_Type"
+        android:textSize="12sp"/>
 </LinearLayout>  
   
 <ListView 

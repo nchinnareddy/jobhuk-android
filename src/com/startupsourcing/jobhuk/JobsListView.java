@@ -49,7 +49,8 @@ public class JobsListView extends ArrayAdapter<Object>{
 		tv5.setText(map.get("Duration_hours"+position)+" hrs");
 		TextView tv6 = (TextView)row.findViewById(R.id.time);
 		tv6.setText(map.get("Contract_rate"+position));
-		
+		TextView tv7 = (TextView)row.findViewById(R.id.posted);
+		tv7.setText(map.get("Posted_ago"+position));
 		return row;
 	
 	}
