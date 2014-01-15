@@ -11,5 +11,13 @@
     <string name="title_activity_fb__login">FB_Login</string>
     <string name="title_activity_twitter__login">Twitter_Login</string>
     <string name="title_activity_linked_in__login">LinkedIn_Login</string>
+    
+    <string-array name="salary_amount">
+        <item>$100,000+</item>
+        <item>$80,000+</item>
+        <item>$60,000+</item>
+        <item>$40,000+</item>
+    </string-array>
+ 
 
 </resources>
