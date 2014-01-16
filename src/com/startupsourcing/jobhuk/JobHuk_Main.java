@@ -17,17 +17,23 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.PopupWindow;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -50,7 +56,8 @@ public class JobHuk_Main extends Activity implements OnClickListener {
 	
 	ListView listview;
 	JobsListView adapter;
-	Button prev,one,two,three,four,five,next,update,amount,job_type,finders_fee;
+	Button prev,one,two,three,four,five,next,update,amount,job_type,finders_fee,filters,popup_close;
+	LinearLayout layout1, layout2, layout3;
 	int Pagenum,TotalPages,no_of_jobs,update_count,jobtype_count,finderfee_count;
 	ArrayList<HashMap<String,String>> list2 = new ArrayList<HashMap<String,String>>();
 	ArrayList<HashMap<String,String>> list3 = new ArrayList<HashMap<String,String>>();
@@ -59,19 +66,23 @@ public class JobHuk_Main extends Activity implements OnClickListener {
 	ArrayList<HashMap<String,String>> Finders_Fee = new ArrayList<HashMap<String,String>>();
 	
 	long Unix_time,Database_time;
+	PopupWindow pwindo;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_jobhuk_main);
 
-		String URL = "http://192.168.0.114:3000/api/jobs/";
+		String URL = "http://192.168.0.114:3001/api/jobs/";
 //		String URL = "http://staging.jobhuk.com/api/jobs";
 //		String URL = "https://www.jobhuk.com/api/jobs";
 
 		new jobslist().execute(URL);
 		
 		listview	= (ListView) findViewById(R.id.listview);
+		layout1 = (LinearLayout) findViewById(R.id.layout1);
+		layout2 = (LinearLayout) findViewById(R.id.layout2);
+		layout3 = (LinearLayout) findViewById(R.id.layout3);
 				
 		prev = (Button) findViewById(R.id.prev);
 		one = (Button) findViewById(R.id.one);
@@ -84,7 +95,8 @@ public class JobHuk_Main extends Activity implements OnClickListener {
 		amount = (Button) findViewById(R.id.amount);
 		job_type = (Button) findViewById(R.id.type);
 		finders_fee = (Button) findViewById(R.id.finders_fee);
-		
+		filters = (Button) findViewById(R.id.filters);
+	
 		prev.setOnClickListener(this);
 		one.setOnClickListener(this);
 		two.setOnClickListener(this);
@@ -96,6 +108,7 @@ public class JobHuk_Main extends Activity implements OnClickListener {
 		amount.setOnClickListener(this);
 		job_type.setOnClickListener(this);
 		finders_fee.setOnClickListener(this);
+		filters.setOnClickListener(this);
 		
 		prev.setEnabled(false);
 	
@@ -142,8 +155,6 @@ public class JobHuk_Main extends Activity implements OnClickListener {
 		String url;
 		JSONArray jobs;
 		ArrayList<String> list = new ArrayList<String>();
-//		ArrayList<HashMap<String,String>> list2 = new ArrayList<HashMap<String,String>>();
-//		ArrayList<HashMap<String,String>> list3 = new ArrayList<HashMap<String,String>>();
 		HashMap<String,String> hash;
 		HttpResponse response;
 		HttpClient httpClient;
@@ -157,7 +168,7 @@ public class JobHuk_Main extends Activity implements OnClickListener {
 				HttpResponse response = client.execute(httpGet);
 				HttpEntity entity = response.getEntity();
 	            Object content = EntityUtils.toString(entity);
-//	            Log.i("Hello",content.toString());
+	            Log.i("Hello",content.toString());
 	            
 	            try {
 					JSONObject jsonResponse = new JSONObject(content.toString());
@@ -201,6 +212,8 @@ public class JobHuk_Main extends Activity implements OnClickListener {
 			Contract.removeAll(Contract);
 			Fulltime.removeAll(Fulltime);
 			Finders_Fee.removeAll(Finders_Fee);
+			
+			Log.i("Array",""+jobs);
 			
 			int x=0,y=0;
 			int b=0,c=0,d=0,e=0;
@@ -422,7 +435,7 @@ public class JobHuk_Main extends Activity implements OnClickListener {
 			finderfee_count++;
 			if(finderfee_count%2==0)
 			{
-				String URL = "http://192.168.0.114:3000/api/jobs?sort=asc";
+				String URL = "http://192.168.0.114:3001/api/jobs?sort=asc";
 				new jobslist().execute(URL);
 				adapter = new JobsListView(JobHuk_Main.this, R.layout.activity_jobslistview, list2);
 			  	listview.setAdapter(adapter);
@@ -430,7 +443,7 @@ public class JobHuk_Main extends Activity implements OnClickListener {
 			}
 			else
 			{
-				String URL = "http://192.168.0.114:3000/api/jobs?sort=desc";
+				String URL = "http://192.168.0.114:3001/api/jobs?sort=desc";
 				new jobslist().execute(URL);
 				adapter = new JobsListView(JobHuk_Main.this, R.layout.activity_jobslistview, list2);
 			  	listview.setAdapter(adapter);
@@ -452,34 +465,39 @@ public class JobHuk_Main extends Activity implements OnClickListener {
 		        adapter.notifyDataSetChanged();
 			}
 			break;
+		case R.id.filters:
+				
+				LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+						View layout = inflater.inflate(R.layout.activity_jobhuk_popup,(ViewGroup)findViewById(R.id.popup_element));
+						pwindo = new PopupWindow(layout, 200, 300, true);
+						pwindo.showAtLocation(layout, Gravity.CENTER, 50, 10);
+						
+						layout1.setVisibility(View.GONE);
+						layout2.setVisibility(View.GONE);
+						listview.setVisibility(View.GONE);
+						layout3.setVisibility(View.GONE);
+						
+						popup_close = (Button) layout.findViewById(R.id.popup_close);
+						popup_close.setOnClickListener(this);
+						
+						layout1.setVisibility(View.VISIBLE);
+						layout2.setVisibility(View.VISIBLE);
+						listview.setVisibility(View.VISIBLE);
+						layout3.setVisibility(View.VISIBLE);
+						
+						update = (Button) layout.findViewById(R.id.update);
+						update.setOnClickListener(this);
+						
+						
+			break;
+		case R.id.popup_close:
+				pwindo.dismiss();
+				layout1.setVisibility(View.VISIBLE);
+				layout2.setVisibility(View.VISIBLE);
+				listview.setVisibility(View.VISIBLE);
+				layout3.setVisibility(View.VISIBLE);
+			break;
 		case R.id.finders_fee:
-			
-/*			Spinner spinner = (Spinner) findViewById(R.id.spinner);
-			spinnerArray.add("$3000");
-			spinnerArray.add("$2000");
-			spinnerArray.add("$1000");
-			spinnerArray.add("$500");
-			spinnerArray.add("$100");
-			
-			 ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this
-			            ,android.R.layout.simple_spinner_item,spinnerArray);
-			spinner.setAdapter(arrayAdapter);
-			
-			spinner.setOnItemSelectedListener(new  AdapterView.OnItemSelectedListener() { 
-
-	            public void onItemSelected(AdapterView<?> adapterView, 
-	           View view, int i, long l) { 
-	           // TODO Auto-generated method stub
-	        Toast.makeText(JobHuk_Main.this,"You Selected : "
-	         + spinnerArray.get(i)+" Level ",Toast.LENGTH_SHORT).show();
-	           
-	             }
-	              // If no option selected
-	  public void onNothingSelected(AdapterView<?> arg0) {
-	   // TODO Auto-generated method stub
-	        
-	  } 
-	      });*/
 			adapter = new JobsListView(JobHuk_Main.this, R.layout.activity_jobslistview, Finders_Fee);
 		  	listview.setAdapter(adapter);
 	        adapter.notifyDataSetChanged();
