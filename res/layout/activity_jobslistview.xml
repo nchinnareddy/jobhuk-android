@@ -18,41 +18,44 @@
     <TextView 
         android:id="@+id/comp_name"
         android:padding="5dp"
-        android:layout_weight=".2"
+        android:layout_weight="1"
         android:textColor="#008B8B"
         android:enabled="true" 
         android:textSize="12sp"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         />
     <TextView 
         android:id="@+id/place"
         android:padding="5dp"
-        android:layout_weight=".5"
+        android:layout_weight="1"
         android:enabled="true" 
         android:textSize="12sp"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"/>
     <TextView 
         android:id="@+id/emp_type"
         android:textColor="#F08080"
+        android:layout_weight="1"
         android:padding="5dp"
         android:textSize="12sp"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"/>
     <TextView 
         android:id="@+id/pay_hr"
         android:textColor="#3CB371"
+        android:layout_weight="1"
         android:padding="5dp"
         android:textSize="12sp"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"/>
    <TextView 
         android:id="@+id/time"
         android:textColor="#CD5C5C"
+        android:layout_weight="1"
         android:padding="5dp"
         android:textSize="12sp"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"/>
  </LinearLayout>  
    <TextView 

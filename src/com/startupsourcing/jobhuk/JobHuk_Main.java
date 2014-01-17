@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -29,6 +30,7 @@ import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -58,7 +60,7 @@ public class JobHuk_Main extends Activity implements OnClickListener {
 	JobsListView adapter;
 	Button prev,one,two,three,four,five,next,update,amount,job_type,finders_fee,filters,popup_close;
 	LinearLayout layout1, layout2, layout3;
-	int Pagenum,TotalPages,no_of_jobs,update_count,jobtype_count,finderfee_count;
+	int Pagenum,TotalPages,no_of_jobs,update_count=1,jobtype_count=1,finderfee_count=1;
 	ArrayList<HashMap<String,String>> list2 = new ArrayList<HashMap<String,String>>();
 	ArrayList<HashMap<String,String>> list3 = new ArrayList<HashMap<String,String>>();
 	ArrayList<HashMap<String,String>> Fulltime = new ArrayList<HashMap<String,String>>();
@@ -73,8 +75,8 @@ public class JobHuk_Main extends Activity implements OnClickListener {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_jobhuk_main);
 
-		String URL = "http://192.168.0.114:3001/api/jobs/";
-//		String URL = "http://staging.jobhuk.com/api/jobs";
+//		String URL = "http://192.168.0.114:3001/api/jobs/";
+		String URL = "http://staging.jobhuk.com/api/jobs";
 //		String URL = "https://www.jobhuk.com/api/jobs";
 
 		new jobslist().execute(URL);
@@ -106,11 +108,34 @@ public class JobHuk_Main extends Activity implements OnClickListener {
 		next.setOnClickListener(this);
 		update.setOnClickListener(this);
 		amount.setOnClickListener(this);
-		job_type.setOnClickListener(this);
-		finders_fee.setOnClickListener(this);
-		filters.setOnClickListener(this);
+//		job_type.setOnClickListener(this);
+//		finders_fee.setOnClickListener(this);
+//		filters.setOnClickListener(this);
 		
 		prev.setEnabled(false);
+		
+		Spinner spinner = (Spinner) findViewById(R.id.spinner);
+		List<String> list = new ArrayList<String>();
+		list.add("FullTime");
+		list.add("Contract");
+		ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item, list);
+		dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		spinner.setAdapter(dataAdapter);
+		
+		spinner.setOnItemSelectedListener(new OnItemSelectedListener() 
+		{
+	        public void onItemSelected(AdapterView<?> parent, View view, int pos,long id) 
+	        {
+	            Toast.makeText(parent.getContext(), 
+	                    "On Item Select : \n" + parent.getItemAtPosition(pos).toString(),
+	                    Toast.LENGTH_LONG).show();
+	        }
+
+			@Override
+			public void onNothingSelected(AdapterView<?> arg0) {
+				// TODO Auto-generated method stub
+				
+			}});
 	
 	}
 	
@@ -118,12 +143,8 @@ public class JobHuk_Main extends Activity implements OnClickListener {
 	{
 				
 		Pagenum = Pageno;
-		if(TotalPages==1)
-		{
-			prev.setEnabled(false);
-			next.setEnabled(false);
-		}
-		else if(TotalPages>1)
+
+		if(TotalPages>1)
 		{
 			if(Pagenum==1)
 				prev.setEnabled(false);
@@ -216,7 +237,6 @@ public class JobHuk_Main extends Activity implements OnClickListener {
 			Log.i("Array",""+jobs);
 			
 			int x=0,y=0;
-			int b=0,c=0,d=0,e=0;
 			for(int i=0;i<jobs.length();i++)
 			{
 				Unix_time = (int) (System.currentTimeMillis() / 1000L);
@@ -248,7 +268,7 @@ public class JobHuk_Main extends Activity implements OnClickListener {
 					}
 					else
 					{
-//						Log.i("Contract","hello");
+						
 						contract.put("Title"+y,jobs_Sub.getString("title"));
 						contract.put("Comp_name"+y,jobs_Sub.getString("company_name"));
 						contract.put("Location"+y, jobs_Sub.getString("location"));
@@ -258,53 +278,7 @@ public class JobHuk_Main extends Activity implements OnClickListener {
 //						contract.put("Posted_ago"+i, posted_ago);
 						y++;
 					}
-					
-					HashMap<String,String> fee = new HashMap<String,String>();
-					int a = (int) Double.parseDouble(jobs_Sub.getString("finders_fee_amount"));
-										
-					if(a>=3000)
-					{
-						fee.put("Title"+b,jobs_Sub.getString("title"));
-						fee.put("Comp_name"+b,jobs_Sub.getString("company_name"));
-						fee.put("Location"+b, jobs_Sub.getString("location"));
-						fee.put("Job_type"+b, jobs_Sub.getString("job_type"));
-						fee.put("Duration_hours"+b,jobs_Sub.getString("duration_hours"));
-						fee.put("Finders_fee"+b,jobs_Sub.getString("finders_fee_amount"));
-						b++;
-					}
-					else if(a>1000||a<=2000)
-					{
-						fee.put("Title"+c,jobs_Sub.getString("title"));
-						fee.put("Comp_name"+c,jobs_Sub.getString("company_name"));
-						fee.put("Location"+c, jobs_Sub.getString("location"));
-						fee.put("Job_type"+c, jobs_Sub.getString("job_type"));
-						fee.put("Duration_hours"+c,jobs_Sub.getString("duration_hours"));
-						fee.put("Finders_fee"+c,jobs_Sub.getString("finders_fee_amount"));
-						c++;
-					}
-					else if(a>500||a<=1000)
-					{
-						fee.put("Title"+d,jobs_Sub.getString("title"));
-						fee.put("Comp_name"+d,jobs_Sub.getString("company_name"));
-						fee.put("Location"+d, jobs_Sub.getString("location"));
-						fee.put("Job_type"+d, jobs_Sub.getString("job_type"));
-						fee.put("Duration_hours"+d,jobs_Sub.getString("duration_hours"));
-						fee.put("Finders_fee"+d,jobs_Sub.getString("finders_fee_amount"));
-						d++;
-					}
-					else
-					{
-						fee.put("Title"+e,jobs_Sub.getString("title"));
-						fee.put("Comp_name"+e,jobs_Sub.getString("company_name"));
-						fee.put("Location"+e, jobs_Sub.getString("location"));
-						fee.put("Job_type"+e, jobs_Sub.getString("job_type"));
-						fee.put("Duration_hours"+e,jobs_Sub.getString("duration_hours"));
-						fee.put("Finders_fee"+e,jobs_Sub.getString("finders_fee_amount"));
-						e++;
-					}
-					
-					Log.i("hello....",jobs_Sub.getString("finders_fee_amount"));
-					
+									
 					
 					String str= jobs_Sub.getString("updated_at");
 					String str1[] = str.split("T");
@@ -339,7 +313,7 @@ public class JobHuk_Main extends Activity implements OnClickListener {
 					list2.add(hash);
 					Fulltime.add(fulltime);
 					Contract.add(contract);
-					Finders_Fee.add(fee);
+//					Finders_Fee.add(fee);
 					
 					} 
 				catch (JSONException e1) {
@@ -347,6 +321,8 @@ public class JobHuk_Main extends Activity implements OnClickListener {
 					e1.printStackTrace();
 				}
 			}
+			
+			Log.i("Contract",""+y);
 			int j,k;
 			for(j=list2.size()-1,k=0;j>=0&&k<list2.size();j--,k++)
 			{
@@ -435,7 +411,7 @@ public class JobHuk_Main extends Activity implements OnClickListener {
 			finderfee_count++;
 			if(finderfee_count%2==0)
 			{
-				String URL = "http://192.168.0.114:3001/api/jobs?sort=asc";
+				String URL = "http://staging.jobhuk.com/api/jobs?sort=asc";
 				new jobslist().execute(URL);
 				adapter = new JobsListView(JobHuk_Main.this, R.layout.activity_jobslistview, list2);
 			  	listview.setAdapter(adapter);
@@ -443,7 +419,7 @@ public class JobHuk_Main extends Activity implements OnClickListener {
 			}
 			else
 			{
-				String URL = "http://192.168.0.114:3001/api/jobs?sort=desc";
+				String URL = "http://staging.jobhuk.com/api/jobs?sort=desc";
 				new jobslist().execute(URL);
 				adapter = new JobsListView(JobHuk_Main.this, R.layout.activity_jobslistview, list2);
 			  	listview.setAdapter(adapter);
@@ -480,15 +456,14 @@ public class JobHuk_Main extends Activity implements OnClickListener {
 						popup_close = (Button) layout.findViewById(R.id.popup_close);
 						popup_close.setOnClickListener(this);
 						
-						layout1.setVisibility(View.VISIBLE);
+/*						layout1.setVisibility(View.VISIBLE);
 						layout2.setVisibility(View.VISIBLE);
 						listview.setVisibility(View.VISIBLE);
-						layout3.setVisibility(View.VISIBLE);
+						layout3.setVisibility(View.VISIBLE);*/
 						
 						update = (Button) layout.findViewById(R.id.update);
 						update.setOnClickListener(this);
-						
-						
+	
 			break;
 		case R.id.popup_close:
 				pwindo.dismiss();

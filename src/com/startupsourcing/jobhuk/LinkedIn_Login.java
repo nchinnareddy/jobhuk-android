@@ -1,6 +1,5 @@
 package com.startupsourcing.jobhuk;
 
-import oauth.signpost.OAuthConsumer;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
@@ -9,9 +8,6 @@ import android.os.StrictMode;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
 
 import com.google.code.linkedinapi.client.LinkedInApiClient;
 import com.google.code.linkedinapi.client.LinkedInApiClientFactory;
@@ -32,14 +28,10 @@ public class LinkedIn_Login extends Activity implements OnClickListener{
 	public static final String CONSUMER_SECRET = "6SM8WNo3VMVcxOCX";
 
 	public static final String APP_NAME = "firstlinked";
-	public static final String OAUTH_CALLBACK_SCHEME = "https";
-	public static final String OAUTH_CALLBACK_HOST = "";
-	public static final String OAUTH_CALLBACK_URL = OAUTH_CALLBACK_SCHEME
-	+ "://www.jobhuk.com" + OAUTH_CALLBACK_HOST;
+	public static final String OAUTH_CALLBACK_SCHEME = "x-oauthflow-linkedin";
+	public static final String OAUTH_CALLBACK_HOST = "litestcalback";
+	public static final String OAUTH_CALLBACK_URL =  "x-oauthflow-linkedin://litestcalback";
 	
-			TextView tv = null;
-			Button signIn, btn_status, post;
-			EditText currentStatus;
 			
 			LinkedInApiClientFactory factory;
 			LinkedInOAuthService oAuthService;
@@ -55,12 +47,6 @@ public class LinkedIn_Login extends Activity implements OnClickListener{
 	        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
 	        StrictMode.setThreadPolicy(policy);
 	        }
-		
-		tv = (TextView) findViewById(R.id.tv);
-		signIn = (Button) findViewById(R.id.btn_sign);
-		btn_status = (Button) findViewById(R.id.btn_post);
-		post = (Button) findViewById(R.id.btn_send);
-		currentStatus = (EditText) findViewById(R.id.edt_post);
 
 			oAuthService = LinkedInOAuthServiceFactory
 			.getInstance().createLinkedInOAuthService(CONSUMER_KEY,CONSUMER_SECRET);
@@ -87,16 +73,16 @@ client = factory.createLinkedInApiClient(accessToken);
 client.postNetworkUpdate("LinkedIn Android app test");
 Person profile = client.getProfileForCurrentUser();
 
-post.setOnClickListener(new OnClickListener() {
-
-@Override
-public void onClick(View v) {
-// TODO Auto-generated method stub
-String status = currentStatus.getText().toString();
-client.updateCurrentStatus(status);
-currentStatus.setText("");
-}
-});
+//post.setOnClickListener(new OnClickListener() {
+//
+//@Override
+//public void onClick(View v) {
+//// TODO Auto-generated method stub
+//String status = currentStatus.getText().toString();
+//client.updateCurrentStatus(status);
+//currentStatus.setText("");
+//}
+//});
 
 // for update status......
 //
@@ -112,7 +98,7 @@ Log.e("Picture:", "" + profile.getPictureUrl());
 Log.e("Picture:", "" + profile.getApiStandardProfileRequest() + "\n"
 + profile.getSiteStandardProfileRequest().getUrl());
 
-tv.setText(profile.getLastName() + " " + profile.getFirstName());
+//tv.setText(profile.getLastName() + " " + profile.getFirstName());
 
 Groups categoryImpl = client.getSuggestedGroups();
 for (Group p : categoryImpl.getGroupList()) {

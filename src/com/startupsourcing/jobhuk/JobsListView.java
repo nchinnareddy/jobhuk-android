@@ -26,34 +26,47 @@ public class JobsListView extends ArrayAdapter<Object>{
 	public View getView(int position, View convertView, ViewGroup parent) {
 //		Log.i("Hello","Call from Update");
 		View row = convertView;
+		final ViewHolder holder;
+
 		if(row == null)
 		{
-//			Log.i("Position.",""+position);
+			Log.i("Position.",""+position);
 			LayoutInflater inflater = (LayoutInflater)getContext().getSystemService
 				      (Context.LAYOUT_INFLATER_SERVICE);
-			row = inflater.inflate(R.layout.activity_jobslistview,parent,false);
+			row = inflater.inflate(R.layout.activity_jobslistview,null);
+			holder = new ViewHolder();
+			
+			holder.tv1 = (TextView)row.findViewById(R.id.jobtitle);
+			holder.tv2 = (TextView)row.findViewById(R.id.comp_name);
+			holder.tv3 = (TextView)row.findViewById(R.id.place);
+			holder.tv4 = (TextView)row.findViewById(R.id.emp_type);
+			holder.tv5 = (TextView)row.findViewById(R.id.pay_hr);
+			holder.tv6 = (TextView)row.findViewById(R.id.time);
+			holder.tv7 = (TextView)row.findViewById(R.id.posted);
+			
+			row.setTag(holder);
 		}
+		
+		else {
+			holder = (ViewHolder) convertView.getTag();
+		}
+
 
 		HashMap<String,String> map = values.get(position);
 		if(map.get("Title"+position)!=null)
 		{
-			TextView tv1 = (TextView)row.findViewById(R.id.jobtitle);
-			tv1.setText(map.get("Title"+position));
-			TextView tv2 = (TextView)row.findViewById(R.id.comp_name);
-			tv2.setText(map.get("Comp_name"+position));
-			TextView tv3 = (TextView)row.findViewById(R.id.place);
-			tv3.setText(map.get("Location"+position));
-			TextView tv4 = (TextView)row.findViewById(R.id.emp_type);
-			tv4.setText(map.get("Job_type"+position));
-			TextView tv5 = (TextView)row.findViewById(R.id.pay_hr);
-			tv5.setText(map.get("Duration_hours"+position)+" hrs");
-			TextView tv6 = (TextView)row.findViewById(R.id.time);
+			Log.i("hello",map.get("Title"+position));
+			
+			holder.tv1.setText(map.get("Title"+position));
+			holder.tv2.setText(map.get("Comp_name"+position));
+			holder.tv3.setText(map.get("Location"+position));
+			holder.tv4.setText(map.get("Job_type"+position));
+			holder.tv5.setText(map.get("Duration_hours"+position)+" hrs");
 
 			int amount =(int) Double.parseDouble(map.get("Finders_fee"+position));
-			tv6.setText("$ "+amount);
-			
-			TextView tv7 = (TextView)row.findViewById(R.id.posted);
-			tv7.setText(map.get("Posted_ago"+position));
+			holder.tv6.setText("$ "+amount);
+
+			holder.tv7.setText(map.get("Posted_ago"+position));
 			
 		}
 		return row;
@@ -74,7 +87,13 @@ public class JobsListView extends ArrayAdapter<Object>{
 	@Override
 	public long getItemId(int position) {
 		// TODO Auto-generated method stub
-		return 0;
+		return position;
 	}
+	
+	public class ViewHolder
+	{
+		private TextView tv1, tv2, tv3, tv4, tv5, tv6, tv7;
+	}
+
 
 }

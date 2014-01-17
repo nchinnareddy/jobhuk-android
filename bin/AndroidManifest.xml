@@ -70,7 +70,7 @@
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:host="litestcalback" android:scheme="x-oauthflow-linkedin" />
+                <data android:scheme="x-oauthflow-linkedin" android:host="litestcalback"/>
            		</intent-filter>
         </activity>
         

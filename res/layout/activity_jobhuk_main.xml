@@ -9,11 +9,7 @@
     android:orientation="horizontal"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
-   <!-- <Spinner 
-    android:id="@+id/spinner"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:text="Hello"/>  -->
+	
     <Button 
         android:id="@+id/update"
         android:layout_width="wrap_content"
@@ -26,12 +22,17 @@
         android:layout_height="wrap_content"
         android:text="Amount"
         android:textSize="12sp"/>
-        <Button 
+        <Spinner 
+    	android:id="@+id/spinner"
+    	android:layout_width="wrap_content"
+    	android:layout_height="wrap_content"
+    	android:text="Hello"/>
+        <!--  <Button 
         android:id="@+id/type"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Job_Type"
-        android:textSize="12sp"/>
+        android:textSize="12sp"/>-->
         <Button 
         android:id="@+id/finders_fee"
         android:layout_width="wrap_content"

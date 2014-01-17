@@ -33,7 +33,7 @@ public class Twitter_Login extends Activity {
     static final String PREF_KEY_OAUTH_SECRET = "thMCMVq2M04ErSu0mccmOvUoNlGhiFEaanuc1UTN6cQHe";
     static final String PREF_KEY_TWITTER_LOGIN = "isTwitterLogedIn";
  
-    static final String TWITTER_CALLBACK_URL = "www.jobhuk.com";
+    static final String TWITTER_CALLBACK_URL =  "oauth://t4jsample";
  
     // Twitter oauth urls
     static final String URL_TWITTER_AUTH = "auth_url";
