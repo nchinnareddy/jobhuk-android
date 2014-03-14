@@ -18,15 +18,18 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.StrictMode;
+import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -41,6 +44,14 @@ import android.widget.Toast;
 
 public class JobHuk_Main extends Activity implements OnClickListener {
 	
+	private DrawerLayout mDrawerLayout;
+    private ListView mDrawerList;
+    private ActionBarDrawerToggle mDrawerToggle;
+
+    private CharSequence mDrawerTitle;
+    private CharSequence mTitle;
+    private String[] mPlanetTitles;
+	
 	String[] values = null;
 	String jobs_count,posted_ago;
 	public ArrayList<String> Title = new ArrayList<String>();
@@ -52,13 +63,13 @@ public class JobHuk_Main extends Activity implements OnClickListener {
 	public ArrayList<String> Description = new ArrayList<String>();
 	public ArrayList<String> Finders_fee = new ArrayList<String>();
 	public ArrayList<String> Date_posted = new ArrayList<String>();
+	public ArrayList<String> Compensation = new ArrayList<String>();
 	
 	ArrayList<String> spinnerArray = new ArrayList<String>();
-	
-	
-	ListView listview;
-	JobsListView adapter;
-	Button prev,one,two,three,four,five,next,update,amount,job_type,finders_fee,filters,popup_close;
+
+	public ListView listview;
+	public JobsListView adapter;
+	Button prev,one,two,three,four,five,next,update,amount,job_type,salary,filters,popup_close,finders_fee;
 	LinearLayout layout1, layout2, layout3;
 	int Pagenum,TotalPages,no_of_jobs,update_count=1,jobtype_count=1,finderfee_count=1;
 	ArrayList<HashMap<String,String>> list2 = new ArrayList<HashMap<String,String>>();
@@ -70,55 +81,81 @@ public class JobHuk_Main extends Activity implements OnClickListener {
 	long Unix_time,Database_time;
 	PopupWindow pwindo;
 	
+	SharedPreferences prefs;
+	SharedPreferences.Editor editor;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_jobhuk_main);
+		
+		mPlanetTitles = new String[] {"Finders Fee","Type","Salary","Location","Skills","Industries"};
+       
+        
+        ArrayList<String> list = new ArrayList<String>();
+	    for (int i = 0; i < mPlanetTitles.length; ++i) {
+	      list.add(mPlanetTitles[i]);
+	    }
+	    
+	    mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout); //NavigationDrawer
+        mDrawerList = (ListView) findViewById(R.id.left_drawer); //ListView
+        
+       listAdapter adapter = new listAdapter(JobHuk_Main.this,android.R.layout.simple_list_item_1,list);
+        mDrawerList.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
+        
+        getActionBar().setDisplayHomeAsUpEnabled(true);
+        getActionBar().setHomeButtonEnabled(true);
+        
+        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,R.drawable.ic_drawer,R.string.app_name,R.string.app_name)
+        {
+            public void onDrawerClosed(View drawerView) {
+            	super.onDrawerClosed(drawerView);
+                getActionBar().setTitle(mTitle);
+                // calling onPrepareOptionsMenu() to show action bar icons
+                invalidateOptionsMenu();
+            }
+ 
+            public void onDrawerOpened(View drawerView) {
+            	super.onDrawerOpened(drawerView);
+                getActionBar().setTitle(mDrawerTitle);
+                // calling onPrepareOptionsMenu() to hide action bar icons
+                invalidateOptionsMenu();
+            }
+        };
+        mDrawerLayout.setDrawerListener(mDrawerToggle);
 
-//		String URL = "http://192.168.0.114:3001/api/jobs/";
+//		String URL = "http://192.168.0.111:3000/api/jobs/";
 		String URL = "http://staging.jobhuk.com/api/jobs";
 //		String URL = "https://www.jobhuk.com/api/jobs";
+		
+		prefs =getSharedPreferences("my_prefs", MODE_WORLD_READABLE);
+		editor = prefs.edit();
+		
+		if (android.os.Build.VERSION.SDK_INT > 9) {
+	        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+	        StrictMode.setThreadPolicy(policy);
+	        }
 
 		new jobslist().execute(URL);
 		
 		listview	= (ListView) findViewById(R.id.listview);
 		layout1 = (LinearLayout) findViewById(R.id.layout1);
 		layout2 = (LinearLayout) findViewById(R.id.layout2);
-		layout3 = (LinearLayout) findViewById(R.id.layout3);
-				
-		prev = (Button) findViewById(R.id.prev);
-		one = (Button) findViewById(R.id.one);
-		two = (Button) findViewById(R.id.two);
-		three = (Button) findViewById(R.id.three);
-		four = (Button) findViewById(R.id.four);
-		five = (Button) findViewById(R.id.five);
-		next = (Button) findViewById(R.id.next);
+
 		update = (Button) findViewById(R.id.update);
 		amount = (Button) findViewById(R.id.amount);
-		job_type = (Button) findViewById(R.id.type);
+
 		finders_fee = (Button) findViewById(R.id.finders_fee);
-		filters = (Button) findViewById(R.id.filters);
-	
-		prev.setOnClickListener(this);
-		one.setOnClickListener(this);
-		two.setOnClickListener(this);
-		three.setOnClickListener(this);
-		four.setOnClickListener(this);
-		five.setOnClickListener(this);
-		next.setOnClickListener(this);
+
 		update.setOnClickListener(this);
 		amount.setOnClickListener(this);
-//		job_type.setOnClickListener(this);
-//		finders_fee.setOnClickListener(this);
-//		filters.setOnClickListener(this);
-		
-		prev.setEnabled(false);
 		
 		Spinner spinner = (Spinner) findViewById(R.id.spinner);
-		List<String> list = new ArrayList<String>();
-		list.add("FullTime");
-		list.add("Contract");
-		ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item, list);
+		List<String> list1 = new ArrayList<String>();
+		list1.add("FullTime");
+		list1.add("Contract");
+		ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item, list1);
 		dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		spinner.setAdapter(dataAdapter);
 		
@@ -126,38 +163,177 @@ public class JobHuk_Main extends Activity implements OnClickListener {
 		{
 	        public void onItemSelected(AdapterView<?> parent, View view, int pos,long id) 
 	        {
-	            Toast.makeText(parent.getContext(), 
-	                    "On Item Select : \n" + parent.getItemAtPosition(pos).toString(),
-	                    Toast.LENGTH_LONG).show();
+	            String jobtype =parent.getItemAtPosition(pos).toString();
+	            editor.putString("jobtype", jobtype);
+	            editor.commit();
+	            	String URL = "http://staging.jobhuk.com/api/jobs?job_type="+jobtype+"";
+					new jobslist().execute(URL);
+	        }
+			@Override
+			public void onNothingSelected(AdapterView<?> arg0) {
+				// TODO Auto-generated method stub
+			}});
+		
+		Spinner spinner2 = (Spinner) findViewById(R.id.spinner2);
+		List<String> list4 = new ArrayList<String>();
+		list4.add("$ 100,000+");
+		list4.add("$ 80,000+");
+		list4.add("$ 60,000+");
+		list4.add("$ 40,000+");
+		ArrayAdapter<String> dataAdapter2 = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item, list4);
+		dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		spinner2.setAdapter(dataAdapter2);
+		
+		spinner2.setOnItemSelectedListener(new OnItemSelectedListener() 
+		{
+	        public void onItemSelected(AdapterView<?> parent, View view, int pos,long id) 
+	        {
+	            	int compensation = Integer.parseInt(parent.getItemAtPosition(pos).toString().replaceAll("\\D", ""));
+	            	editor.putInt("compensation", compensation);
+		            editor.commit();
+	            	String URL = "http://staging.jobhuk.com/api/jobs?compensation="+compensation+"";
+					new jobslist().execute(URL);
 	        }
 
 			@Override
 			public void onNothingSelected(AdapterView<?> arg0) {
 				// TODO Auto-generated method stub
-				
+			}});
+		
+		
+		Spinner spinner1 = (Spinner) findViewById(R.id.spinner1);
+		List<String> list11 = new ArrayList<String>();
+		list11.add("$ 3000+");
+		list11.add("$ 2000+");
+		list11.add("$ 1000+");
+		list11.add("$ 500+");
+		ArrayAdapter<String> dataAdapter1 = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item, list11);
+		dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		spinner1.setAdapter(dataAdapter1);
+		
+		spinner1.setOnItemSelectedListener(new OnItemSelectedListener() 
+		{
+	        public void onItemSelected(AdapterView<?> parent, View view, int pos,long id) 
+	        {
+	            	int finders_fee_amount = Integer.parseInt(parent.getItemAtPosition(pos).toString().replaceAll("\\D", ""));	            	
+	            	editor.putInt("finders_fee_amount", finders_fee_amount);
+		            editor.commit();
+	            	String URL = "http://staging.jobhuk.com/api/jobs?finders_fee_amount="+finders_fee_amount+"";
+					new jobslist().execute(URL);
+	            }
+
+			@Override
+			public void onNothingSelected(AdapterView<?> arg0) {
+				// TODO Auto-generated method stub
+			}});
+		
+		
+		Spinner spinner3 = (Spinner) findViewById(R.id.spinner3);
+		List<String> list5 = new ArrayList<String>();
+		list5.add("Hyderabad");
+		list5.add("Chennai");
+		list5.add("Banglore");
+		list5.add("Mumbai");
+		ArrayAdapter<String> dataAdapter5 = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item, list5);
+		dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		spinner3.setAdapter(dataAdapter5);
+		
+		spinner3.setOnItemSelectedListener(new OnItemSelectedListener() 
+		{
+	        public void onItemSelected(AdapterView<?> parent, View view, int pos,long id) 
+	        {
+	        	String location =parent.getItemAtPosition(pos).toString().toLowerCase();
+	        	editor.putString("location", location);
+	            editor.commit();
+	            	String URL = "http://staging.jobhuk.com/api/jobs?location="+location+"";
+					new jobslist().execute(URL);
+	            }
+
+			@Override
+			public void onNothingSelected(AdapterView<?> arg0) {
+				// TODO Auto-generated method stub
+			}});
+	
+	
+		Spinner spinner4 = (Spinner) findViewById(R.id.spinner4);
+		List<String> list6 = new ArrayList<String>();
+		list6.add("Java");
+		list6.add("Ruby On Rails");
+		list6.add("Html5");
+		list6.add("Ruby");
+		ArrayAdapter<String> dataAdapter6 = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item, list6);
+		dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		spinner4.setAdapter(dataAdapter6);
+		
+		spinner4.setOnItemSelectedListener(new OnItemSelectedListener() 
+		{
+	        public void onItemSelected(AdapterView<?> parent, View view, int pos,long id) 
+	        {
+	        	String job_skills =parent.getItemAtPosition(pos).toString().toLowerCase().replaceAll("\\W", "");	
+	        	editor.putString("job_skills", job_skills);
+	            editor.commit();
+	            	String URL = "http://staging.jobhuk.com/api/jobs?job_skills="+job_skills+"";
+					new jobslist().execute(URL);
+	            }
+
+			@Override
+			public void onNothingSelected(AdapterView<?> arg0) {
+				// TODO Auto-generated method stub
 			}});
 	
 	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+	    // toggle nav drawer on selecting action bar app icon/title
+	    if (mDrawerToggle.onOptionsItemSelected(item)) {
+	        return true;
+	    }
+	    // Handle action bar actions click
+	    switch (item.getItemId()) {
+	    case R.id.action_settings:
+	        return true;
+	    default:
+	        return super.onOptionsItemSelected(item);
+	    }
+	}
+
+	@Override
+	public boolean onPrepareOptionsMenu(Menu menu) {
+	    // if nav drawer is opened, hide the action items
+	    boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
+	    return super.onPrepareOptionsMenu(menu);
+	}
+
+	@Override
+	protected void onPostCreate(Bundle savedInstanceState) {
+	    super.onPostCreate(savedInstanceState);
+	    mDrawerToggle.syncState();
+	}
+
+	@Override
+	public void onConfigurationChanged(Configuration newConfig) {
+	    super.onConfigurationChanged(newConfig);
+	    mDrawerToggle.onConfigurationChanged(newConfig);
+	}
+
+		@Override
+		public boolean onCreateOptionsMenu(Menu menu) {
+			// Inflate the menu; this adds items to the action bar if it is present.
+			getMenuInflater().inflate(R.menu.job_huk__main3, menu);
+			return true;
+		}
 	
 	public void show_Pagelist(int Pageno)
 	{
 				
 		Pagenum = Pageno;
 
-		if(TotalPages>1)
+		if(Pagenum!=TotalPages)
 		{
-			if(Pagenum==1)
-				prev.setEnabled(false);
-			else if(Pagenum==TotalPages)
-				next.setEnabled(false);
-			else
-			{
-				prev.setEnabled(true);
-				next.setEnabled(true);
-				two.setEnabled(true);
-				three.setEnabled(true);
-			}
-			String URL = "http://staging.jobhuk.com/api/jobs?page="+Pagenum+"";
+			Log.i("Hello Page",""+Pagenum);
+			
+		String URL = "http://staging.jobhuk.com/api/jobs?page="+Pagenum+"";
 			new jobslist().execute(URL);
 		}
 		
@@ -167,7 +343,6 @@ public class JobHuk_Main extends Activity implements OnClickListener {
 			String URL = "http://staging.jobhuk.com/api/jobs";
     		Toast.makeText(getApplicationContext(),
 	        	      "Last page has been reached ", Toast.LENGTH_SHORT).show();
-//			new jobslist().execute(URL);
 		}
 	}
 	
@@ -180,7 +355,6 @@ public class JobHuk_Main extends Activity implements OnClickListener {
 		HttpResponse response;
 		HttpClient httpClient;
 		
-		@Override
 		protected JSONArray doInBackground(String... params) {
 			 HttpClient client = new DefaultHttpClient();
 			 HttpGet httpGet = new HttpGet(params[0]);
@@ -189,7 +363,6 @@ public class JobHuk_Main extends Activity implements OnClickListener {
 				HttpResponse response = client.execute(httpGet);
 				HttpEntity entity = response.getEntity();
 	            Object content = EntityUtils.toString(entity);
-	            Log.i("Hello",content.toString());
 	            
 	            try {
 					JSONObject jsonResponse = new JSONObject(content.toString());
@@ -233,10 +406,7 @@ public class JobHuk_Main extends Activity implements OnClickListener {
 			Contract.removeAll(Contract);
 			Fulltime.removeAll(Fulltime);
 			Finders_Fee.removeAll(Finders_Fee);
-			
-			Log.i("Array",""+jobs);
-			
-			int x=0,y=0;
+
 			for(int i=0;i<jobs.length();i++)
 			{
 				Unix_time = (int) (System.currentTimeMillis() / 1000L);
@@ -253,32 +423,7 @@ public class JobHuk_Main extends Activity implements OnClickListener {
 					Duration_hours.add(jobs_Sub.getString("duration_hours"));
 					Contract_rate.add(jobs_Sub.getString("contract_rate"));
 					Finders_fee.add(jobs_Sub.getString("finders_fee_amount"));
-					
-					if(jobs_Sub.getString("job_type").equals("FullTime"))
-					{
-//						Log.i("Full","hello");
-						fulltime.put("Title"+x,jobs_Sub.getString("title"));
-						fulltime.put("Comp_name"+x,jobs_Sub.getString("company_name"));
-						fulltime.put("Location"+x, jobs_Sub.getString("location"));
-						fulltime.put("Job_type"+x, jobs_Sub.getString("job_type"));
-						fulltime.put("Duration_hours"+x,jobs_Sub.getString("duration_hours"));
-						fulltime.put("Finders_fee"+x,jobs_Sub.getString("finders_fee_amount"));
-//						fulltime.put("Posted_ago"+i, posted_ago);
-						x++;
-					}
-					else
-					{
-						
-						contract.put("Title"+y,jobs_Sub.getString("title"));
-						contract.put("Comp_name"+y,jobs_Sub.getString("company_name"));
-						contract.put("Location"+y, jobs_Sub.getString("location"));
-						contract.put("Job_type"+y, jobs_Sub.getString("job_type"));
-						contract.put("Duration_hours"+y,jobs_Sub.getString("duration_hours"));
-						contract.put("Finders_fee"+y,jobs_Sub.getString("finders_fee_amount"));
-//						contract.put("Posted_ago"+i, posted_ago);
-						y++;
-					}
-									
+					Compensation.add(jobs_Sub.getString("compensation"));
 					
 					String str= jobs_Sub.getString("updated_at");
 					String str1[] = str.split("T");
@@ -294,7 +439,14 @@ public class JobHuk_Main extends Activity implements OnClickListener {
 					
 					if(q!=0&&(r==0||r!=0))
 					{
-						posted_ago = "posted about "+q+" month ago" ;
+						if(q==1)
+							posted_ago = "posted about "+q+" month ago" ;
+						else
+							posted_ago = "posted about "+q+" months ago" ;
+					}
+					else if(q==0&&r==0)
+					{
+						posted_ago = "posted today" ;
 					}
 					else
 					{
@@ -306,14 +458,14 @@ public class JobHuk_Main extends Activity implements OnClickListener {
 					hash.put("Location"+i, jobs_Sub.getString("location"));
 					hash.put("Job_type"+i, jobs_Sub.getString("job_type"));
 					hash.put("Duration_hours"+i,jobs_Sub.getString("duration_hours"));
+					hash.put("Compensation"+i, jobs_Sub.getString("compensation"));
 					hash.put("Finders_fee"+i,jobs_Sub.getString("finders_fee_amount"));
 					
-					hash.put("Posted_ago"+i, posted_ago);
+					hash.put("Posted_ago"+i, posted_ago);				
 					
 					list2.add(hash);
 					Fulltime.add(fulltime);
 					Contract.add(contract);
-//					Finders_Fee.add(fee);
 					
 					} 
 				catch (JSONException e1) {
@@ -321,25 +473,7 @@ public class JobHuk_Main extends Activity implements OnClickListener {
 					e1.printStackTrace();
 				}
 			}
-			
-			Log.i("Contract",""+y);
-			int j,k;
-			for(j=list2.size()-1,k=0;j>=0&&k<list2.size();j--,k++)
-			{
-				HashMap<String,String> map = list2.get(j);
-				HashMap<String,String> map1 = new HashMap<String,String>();
-				
-				map1.put("Title"+k, map.get("Title"+j));
-				map1.put("Comp_name"+k,map.get("Comp_name"+j));
-				map1.put("Location"+k, map.get("Location"+j));
-				map1.put("Job_type"+k, map.get("Job_type"+j));
-				map1.put("Duration_hours"+k,map.get("Duration_hours"+j));
-				map1.put("Finders_fee"+k,map.get("Finders_fee"+j));
-				map1.put("Posted_ago"+k,map.get("Posted_ago"+j));
-				
-				list3.add(map1);
-			}
-
+					
 			adapter = new JobsListView(JobHuk_Main.this, R.layout.activity_jobslistview, list2);
 		  	listview.setAdapter(adapter);
 	        adapter.notifyDataSetChanged();
@@ -347,9 +481,7 @@ public class JobHuk_Main extends Activity implements OnClickListener {
 	        listview.setOnItemClickListener(new OnItemClickListener() {
 	        	  public void onItemClick(AdapterView<?> parent, View view,
 	        	    int position, long id) {
-/*	        		Toast.makeText(getApplicationContext(),
-	        	      "Click ListItem Number " + position, Toast.LENGTH_SHORT)
-	        	      .show();*/
+
 	        		  Intent hello = new Intent(JobHuk_Main.this,JobsDescription.class);
 	        		  hello.putExtra("Title", Title.get(position));
 	        		  hello.putExtra("Comp_name", Comp_name.get(position));
@@ -358,6 +490,7 @@ public class JobHuk_Main extends Activity implements OnClickListener {
 	        		  hello.putExtra("Duration_hours", Duration_hours.get(position));
 	        		  hello.putExtra("Description", Description.get(position));
 	        		  hello.putExtra("Finders_fee",Finders_fee.get(position));
+	        		  hello.putExtra("Compensation",Compensation.get(position));
 	        		  startActivity(hello);
 	        	  }
 	        	});
@@ -369,102 +502,47 @@ public class JobHuk_Main extends Activity implements OnClickListener {
 		// TODO Auto-generated method stub
 		switch(v.getId())
 		{
-		case R.id.prev:
-			int prev = Pagenum-1;
-			show_Pagelist(prev);
-			break;
-		case R.id.one:
-			show_Pagelist(Integer.parseInt(one.getText().toString()));
-			break;
-		case R.id.two:
-			show_Pagelist(Integer.parseInt(two.getText().toString()));
-			break;
-		case R.id.three:
-			show_Pagelist(Integer.parseInt(three.getText().toString()));
-			break;
-		case R.id.four:
-			show_Pagelist(Integer.parseInt(four.getText().toString()));
-			break;
-		case R.id.five:
-			show_Pagelist(Integer.parseInt(five.getText().toString()));
-			break;
-		case R.id.next:
-			int next = Pagenum+1;
-			show_Pagelist(next);
-			break;	
+
 		case R.id.update:
 			update_count++;
-			if(update_count%2==0)
-			{
-				adapter = new JobsListView(JobHuk_Main.this, R.layout.activity_jobslistview, list3);
-			  	listview.setAdapter(adapter);
-		        adapter.notifyDataSetChanged();
-			}
-			else
-			{
+//			String type = prefs.getString("type", null);
+				String hello = prefs.getString("jobtype", ""),URL;
+				if(!hello.equals(Contract))
+				{
+					 URL = "http://staging.jobhuk.com/api/jobs?job_type="+hello+"&sort_by=date_posted&sort_type=desc";
+				}
+				else
+				{
+					URL = "http://staging.jobhuk.com/api/jobs?job_type="+hello+"sort_by=date_posted&sort_type=asc";	
+				}
+//				URL = "http://staging.jobhuk.com/api/jobs?sort_by=date_posted&sort_type=asc";
+				new jobslist().execute(URL);
 				adapter = new JobsListView(JobHuk_Main.this, R.layout.activity_jobslistview, list2);
 			  	listview.setAdapter(adapter);
 		        adapter.notifyDataSetChanged();
-			}
+
+
 			break;
 		case R.id.amount:
 			finderfee_count++;
 			if(finderfee_count%2==0)
 			{
-				String URL = "http://staging.jobhuk.com/api/jobs?sort=asc";
-				new jobslist().execute(URL);
+				String URL1 = "http://staging.jobhuk.com/api/jobs?sort_by=amount&sort_type=asc";
+				new jobslist().execute(URL1);
 				adapter = new JobsListView(JobHuk_Main.this, R.layout.activity_jobslistview, list2);
 			  	listview.setAdapter(adapter);
 		        adapter.notifyDataSetChanged();
 			}
 			else
 			{
-				String URL = "http://staging.jobhuk.com/api/jobs?sort=desc";
-				new jobslist().execute(URL);
+				String URL2 = "http://staging.jobhuk.com/api/jobs?sort_by=amount&sort_type=desc";
+				new jobslist().execute(URL2);
 				adapter = new JobsListView(JobHuk_Main.this, R.layout.activity_jobslistview, list2);
 			  	listview.setAdapter(adapter);
 		        adapter.notifyDataSetChanged();
 			}
 			break;
-		case R.id.type:
-			jobtype_count++;
-			if(jobtype_count%2==0)
-			{
-				adapter = new JobsListView(JobHuk_Main.this, R.layout.activity_jobslistview, Fulltime);
-			  	listview.setAdapter(adapter);
-		        adapter.notifyDataSetChanged();
-			}
-			else
-			{
-				adapter = new JobsListView(JobHuk_Main.this, R.layout.activity_jobslistview, Contract);
-			  	listview.setAdapter(adapter);
-		        adapter.notifyDataSetChanged();
-			}
-			break;
-		case R.id.filters:
-				
-				LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-						View layout = inflater.inflate(R.layout.activity_jobhuk_popup,(ViewGroup)findViewById(R.id.popup_element));
-						pwindo = new PopupWindow(layout, 200, 300, true);
-						pwindo.showAtLocation(layout, Gravity.CENTER, 50, 10);
-						
-						layout1.setVisibility(View.GONE);
-						layout2.setVisibility(View.GONE);
-						listview.setVisibility(View.GONE);
-						layout3.setVisibility(View.GONE);
-						
-						popup_close = (Button) layout.findViewById(R.id.popup_close);
-						popup_close.setOnClickListener(this);
-						
-/*						layout1.setVisibility(View.VISIBLE);
-						layout2.setVisibility(View.VISIBLE);
-						listview.setVisibility(View.VISIBLE);
-						layout3.setVisibility(View.VISIBLE);*/
-						
-						update = (Button) layout.findViewById(R.id.update);
-						update.setOnClickListener(this);
-	
-			break;
+		
 		case R.id.popup_close:
 				pwindo.dismiss();
 				layout1.setVisibility(View.VISIBLE);
@@ -472,12 +550,6 @@ public class JobHuk_Main extends Activity implements OnClickListener {
 				listview.setVisibility(View.VISIBLE);
 				layout3.setVisibility(View.VISIBLE);
 			break;
-		case R.id.finders_fee:
-			adapter = new JobsListView(JobHuk_Main.this, R.layout.activity_jobslistview, Finders_Fee);
-		  	listview.setAdapter(adapter);
-	        adapter.notifyDataSetChanged();
-			break;
-			
 		}
 	}
 

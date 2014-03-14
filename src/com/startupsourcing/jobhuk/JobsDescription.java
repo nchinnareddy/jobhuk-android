@@ -26,6 +26,7 @@ public class JobsDescription extends Activity implements OnClickListener{
 		String Location = intent.getStringExtra("Location");
 		String Contract_rate = intent.getStringExtra("Contract_rate");
 		String Finders_fee = intent.getStringExtra("Finders_fee");
+		String Compensation = intent.getStringExtra("Compensation");
 		
 		double foo =Double.parseDouble(Finders_fee);
 		int x = (int)foo;

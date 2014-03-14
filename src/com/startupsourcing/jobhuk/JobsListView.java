@@ -61,7 +61,7 @@ public class JobsListView extends ArrayAdapter<Object>{
 			holder.tv2.setText(map.get("Comp_name"+position));
 			holder.tv3.setText(map.get("Location"+position));
 			holder.tv4.setText(map.get("Job_type"+position));
-			holder.tv5.setText(map.get("Duration_hours"+position)+" hrs");
+			holder.tv5.setText("$ "+map.get("Compensation"+position));
 
 			int amount =(int) Double.parseDouble(map.get("Finders_fee"+position));
 			holder.tv6.setText("$ "+amount);
